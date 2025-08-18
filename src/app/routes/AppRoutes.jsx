@@ -16,7 +16,7 @@ const AppRoutes = () => {
       errorElement: <Error404 />,
       children: [
         { path: "/", element: <Home /> },
-        { path: "d", element: <Dummy /> },
+        { path: "c", element: <Dummy /> },
       ],
     },
     

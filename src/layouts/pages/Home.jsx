@@ -1,32 +1,73 @@
-import { Button } from "flowbite-react";
-import React from "react";
-import { Outlet, Link } from "react-router-dom";
-import { Card } from "flowbite-react";
-function Home() {
-  return (
-    <div className="h-screen">
-       
-        <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Blue</button>
-      <h1 className="text-7xl font-bold bg-black text-white">
-        Welcome to Nutraline
-      </h1>
-      <h2 className="text-4xl font-medium">Your Authentic Supplement Line</h2>
+import { Link } from "react-router-dom";
+import CartDrawer from "../../features/cart/CartPage";
 
-     <h1 className="text-7xl font-bold bg-black text-white">
-        Welcome to Nutraline
-      </h1>
-      
-     <Card href="#" className="max-w-sm">
-      <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-        Noteworthy technology acquisitions 2021
-      </h5>
-      <p className="font-normal text-gray-700 dark:text-gray-400">
-        Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.
-      </p>
-    </Card>
-    
+const Home = () => {
+  return (
+    <div className="space-y-12">
+      {/* Hero Section */}
+      <section className="relative bg-blue-50 rounded-2xl p-8 md:p-16 text-center">
+        <h1 className="text-3xl md:text-5xl font-bold mb-4">
+          Fuel Your Fitness, <span className="text-amber-600">Naturally</span>
+        </h1>
+        <p className="max-w-xl mx-auto text-gray-600 mb-6">
+          Shop supplements, vitamins, and proteins crafted to support your health journey.
+        </p>
+        <Link
+          to="/c/supplements"
+          className="px-6 py-3 bg-amber-600 text-white rounded-xl font-medium hover:bg-amber-700"
+        >
+          Shop Now
+        </Link>
+      </section>
+
+      {/* Categories */}
+      <section className="max-w-6xl mx-auto px-4">
+        <h2 className="text-xl font-semibold mb-6">Shop by Category</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+          {[
+            { name: "Supplements", to: "/c/supplements" },
+            { name: "Vitamins", to: "/c/vitamins" },
+            { name: "Protein", to: "/c/protein" },
+            { name: "Combos", to: "/c/combos" },
+            { name: "Deals", to: "/deals" },
+          ].map((c) => (
+            <Link
+              key={c.to}
+              to={c.to}
+              className="p-4 bg-white rounded-2xl shadow hover:shadow-md text-center"
+            >
+              <div className="h-20 w-20 mx-auto mb-2 bg-amber-200 rounded-full flex items-center justify-center">
+                🥤
+              </div>
+              <p className="font-medium">{c.name}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <CartDrawer />
+
+      {/* Featured Products (placeholder) */}
+      <section className="max-w-6xl mx-auto px-4">
+        <h2 className="text-xl font-semibold mb-6">Featured Products</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="p-4 bg-white rounded-2xl shadow hover:shadow-md"
+            >
+              <div className="h-40 bg-amber-100 rounded-xl mb-3" />
+              <h3 className="font-medium">Product {i}</h3>
+              <p className="text-sm text-gray-500">₹{i * 499}</p>
+              <button className="mt-2 w-full rounded-xl bg-amber-600 text-white py-2 hover:bg-amber-700">
+                Add to Cart
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
-}
+};
 
 export default Home;
