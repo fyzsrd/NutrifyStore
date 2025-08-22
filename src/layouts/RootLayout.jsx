@@ -10,7 +10,8 @@ const RootLayout = () => {
   const [cartOpen, setCartOpen] = useState(false);
 
   return (
-    <div className=" overflow-hidden">
+    <>
+     {/* <div className=" overflow-hidden"> */}
       {/* Navbar */}
       <Navbar cartCount={3} onCartClick={() => setCartOpen(true)} />
         
@@ -19,16 +20,7 @@ const RootLayout = () => {
         { name: "Vitamin C", qty: 2, price: 299 },
          { name: "Whey Protein", qty: 1, price: 999 },
         { name: "Vitamin C", qty: 2, price: 299 },
-         { name: "Whey Protein", qty: 1, price: 999 },
-        { name: "Vitamin C", qty: 2, price: 299 },
-         { name: "Whey Protein", qty: 1, price: 999 },
-        { name: "Vitamin C", qty: 2, price: 299 },
-         { name: "Whey Protein", qty: 1, price: 999 },
-        { name: "Vitamin C", qty: 2, price: 299 },
-         { name: "Whey Protein", qty: 1, price: 999 },
-        { name: "Vitamin C", qty: 2, price: 299 },
-         { name: "Whey Protein", qty: 1, price: 999 },
-        { name: "Vitamin C", qty: 2, price: 299 },
+      
 
       ]} />
 
@@ -42,7 +34,8 @@ const RootLayout = () => {
 
       {/* Footer */}
       <Footer />
-    </div>
+    {/* // </div> */}
+    </>
   );
 };
 

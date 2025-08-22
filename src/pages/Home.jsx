@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import CartDrawer from "../../features/cart/CartPage";
+import CartDrawer from "../features/cart/CartPage";
+import { ProductCard } from "../features/products/components/ProductCard";
 
 const Home = () => {
   return (
@@ -25,11 +26,12 @@ const Home = () => {
         <h2 className="text-xl font-semibold mb-6">Shop by Category</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
           {[
-            { name: "Supplements", to: "/c/supplements" },
-            { name: "Vitamins", to: "/c/vitamins" },
-            { name: "Protein", to: "/c/protein" },
-            { name: "Combos", to: "/c/combos" },
+            { name: "All Categories", to: "/category" },
+            { name: "Vitamins", to: "/category/vitamins" },
+            { name: "Protein", to: "/category/protein" },
+            { name: "Combos", to: "/category/combos" },
             { name: "Deals", to: "/deals" },
+
           ].map((c) => (
             <Link
               key={c.to}
@@ -48,24 +50,19 @@ const Home = () => {
       <CartDrawer />
 
       {/* Featured Products (placeholder) */}
-      <section className="max-w-6xl mx-auto px-4">
-        <h2 className="text-xl font-semibold mb-6">Featured Products</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              className="p-4 bg-white rounded-2xl shadow hover:shadow-md"
-            >
-              <div className="h-40 bg-amber-100 rounded-xl mb-3" />
-              <h3 className="font-medium">Product {i}</h3>
-              <p className="text-sm text-gray-500">₹{i * 499}</p>
-              <button className="mt-2 w-full rounded-xl bg-amber-600 text-white py-2 hover:bg-amber-700">
-                Add to Cart
-              </button>
-            </div>
-          ))}
-        </div>
-      </section>
+  <section className="max-w-6xl mx-auto px-4">
+  <h2 className="text-xl font-semibold mb-6">Featured Products</h2>
+
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <Link to={"product-deatil"} >
+    <ProductCard />
+    </Link>
+    <ProductCard />
+    <ProductCard />
+    <ProductCard />
+    
+  </div>
+</section>
     </div>
   );
 };
