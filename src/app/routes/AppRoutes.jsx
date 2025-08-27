@@ -27,11 +27,11 @@ const AppRoutes = () => {
           element: <Dummy />
         },
         {
-          path: 'category',
+          path: 'categories/:id',
           element: <CategoryPage />
         },
         {
-          path: 'product-deatil',
+          path: 'product-detail/:id',
           element: <ProductDetail />
         }
 

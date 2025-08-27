@@ -1,13 +1,19 @@
 import React from 'react'
 import banner from '../assets/Banners/Container.png'
 import { ProductCard } from '../features/products/components/ProductCard'
+import { useParams } from 'react-router-dom'
 
 
 export const CategoryPage = () => {
+    const { id } = useParams();
+
+    
+    console.log(id)
+///api/nutrify/categories/68997eea416cb8e097b83aa6/subcategories
     return (
         <div className="max-w-7xl mx-auto px-4 py-1  sm:px-0.5 ">
             <div className="w-full h-30 overflow-hidden  mb-3.5 sm:h-64 md:h-80 lg:h-96 " >
-                <img className=' h-full object-fill' src={banner} alt="banner" srcset="" />
+                <img className=' h-full object-fill' src={banner} alt="banner" />
             </div>
 
 
@@ -15,6 +21,7 @@ export const CategoryPage = () => {
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
 
+                <h1 className="text-2xl font-bold capitalize">Supplements</h1>
                 <h1 className="text-2xl font-bold capitalize">Supplements</h1>
 
                 {/* Sort Dropdown */}
@@ -26,48 +33,23 @@ export const CategoryPage = () => {
             </div>
 
             {/* Grid of Products */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-6">
                 {/* Product Card 1 */}
-                <div className="p-4 bg-white rounded-2xl shadow hover:shadow-md transition">
+                {/* <div className="p-4 bg-white rounded-2xl shadow hover:shadow-md transition">
                     <div className="h-40 bg-amber-100 rounded-lg mb-3" />
                     <h3 className="font-medium">Whey Protein</h3>
                     <p className="text-sm text-gray-500">₹999</p>
                     <button className="mt-2 w-full rounded-xl bg-amber-600 text-white py-2 hover:bg-amber-700">
                         Add to Cart
                     </button>
-                </div>
+                </div> */}
 
-                <ProductCard />
+
 
                 {/* Product Card 2 */}
-                <div className="p-4 bg-white rounded-2xl shadow hover:shadow-md transition">
-                    <div className="h-40 bg-amber-100 rounded-lg mb-3" />
-                    <h3 className="font-medium">BCAA</h3>
-                    <p className="text-sm text-gray-500">₹599</p>
-                    <button className="mt-2 w-full rounded-xl bg-amber-600 text-white py-2 hover:bg-amber-700">
-                        Add to Cart
-                    </button>
-                </div>
 
-                {/* Product Card 3 */}
-                <div className="p-4 bg-white rounded-2xl shadow hover:shadow-md transition">
-                    <div className="h-40 bg-amber-100 rounded-lg mb-3" />
-                    <h3 className="font-medium">Pre Workout</h3>
-                    <p className="text-sm text-gray-500">₹799</p>
-                    <button className="mt-2 w-full rounded-xl bg-amber-600 text-white py-2 hover:bg-amber-700">
-                        Add to Cart
-                    </button>
-                </div>
 
-                {/* Product Card 4 */}
-                <div className="p-4 bg-white rounded-2xl shadow hover:shadow-md transition">
-                    <div className="h-40 bg-amber-100 rounded-lg mb-3" />
-                    <h3 className="font-medium">Post Workout</h3>
-                    <p className="text-sm text-gray-500">₹899</p>
-                    <button className="mt-2 w-full rounded-xl bg-amber-600 text-white py-2 hover:bg-amber-700">
-                        Add to Cart
-                    </button>
-                </div>
+
             </div>
 
             {/* Pagination (optional) */}

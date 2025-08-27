@@ -1,35 +1,66 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Star, Heart, Truck, RefreshCw, ShieldCheck } from "lucide-react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const ProductDetail = () => {
-  const [selectedWeight, setSelectedWeight] = useState("1kg");
+  const { id } = useParams();
 
-  const weights = [
-    { label: "1kg", price: 1889, discount: 0 },
-    { label: "2kg", price: 3449, discount: 11 },
-    { label: "2kg (Pack of 2)", price: 6883, discount: 25 },
-  ];
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedVariant, setSelectedVariant] = useState(null);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await axios.get(`http://localhost:3000/api/nutrify/home/${id}`);
+        setProduct(res.data);
+
+        // Pick default variant or first one
+        if (res.data.variants?.length > 0) {
+          const def =
+            res.data.variants.find((v) => v.isDefault) ||
+            res.data.variants[0];
+          setSelectedVariant(def);
+        }
+      } catch (error) {
+        console.error("Failed to load product:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
+
+  if (loading) return <p className="text-center py-10">Loading...</p>;
+  if (!product) return <p className="text-center py-10">Product not found</p>;
 
   return (
     <div className="bg-white">
       {/* Wrapper */}
       <div className="max-w-7xl mx-auto p-4 grid grid-cols-1 md:grid-cols-2 gap-8">
-        
         {/* Left - Product Images */}
         <div className="flex flex-col items-center md:sticky md:top-20 self-start">
           <img
-            src="https://nutrabay.com/cdn/shop/products/AvatarAlphaWhey.png"
-            alt="Avatar Alpha Whey"
+            src={selectedVariant?.images?.[0] || product.images?.[0]}
+            alt={product.name}
             className="w-80 h-80 object-contain"
           />
-          <div className="flex gap-2 mt-4">
-            {[1, 2, 3, 4].map((i) => (
+          <div className="flex gap-2 mt-4 flex-wrap">
+            {(selectedVariant?.images?.length
+              ? selectedVariant.images
+              : product.images || []
+            ).map((img, i) => (
               <div
                 key={i}
                 className="w-16 h-16 border rounded-lg flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-purple-500"
+                onClick={() =>
+                  setSelectedVariant({ ...selectedVariant, images: [img] })
+                }
               >
                 <img
-                  src="https://nutrabay.com/cdn/shop/products/AvatarAlphaWhey.png"
+                  src={img}
                   alt="thumb"
                   className="w-12 h-12 object-contain"
                 />
@@ -40,9 +71,7 @@ const ProductDetail = () => {
 
         {/* Right - Product Info */}
         <div>
-          <h1 className="text-2xl font-bold">
-            Avatar Alpha Whey 1kg | Belgian Chocolate | 33 Servings | 20g Protein
-          </h1>
+          <h1 className="text-2xl font-bold">{product.name}</h1>
 
           <div className="flex items-center gap-2 mt-2">
             <span className="text-yellow-500 flex items-center gap-1">
@@ -51,35 +80,65 @@ const ProductDetail = () => {
             <span className="text-gray-600">(224 reviews)</span>
           </div>
 
-          <p className="text-2xl font-semibold mt-4">₹1889</p>
+          <p className="text-2xl font-semibold mt-4">
+            ₹{selectedVariant?.price || product.price}
+          </p>
           <p className="text-gray-500 text-sm">Inclusive of all taxes</p>
 
           {/* Flavour Selector */}
-          <div className="mt-4">
-            <h3 className="font-semibold">Select Flavour:</h3>
-            <button className="mt-2 border px-4 py-2 rounded-lg bg-purple-100 text-purple-700">
-              Belgian Chocolate
-            </button>
-          </div>
+          {product.variants?.some((v) => v.flavor) && (
+            <div className="mt-4">
+              <h3 className="font-semibold">Select Flavour:</h3>
+              <div className="flex gap-3 mt-2 flex-wrap">
+                {[...new Set(product.variants.map((v) => v.flavor))].map(
+                  (flavor) => (
+                    <button
+                      key={flavor}
+                      onClick={() => {
+                        const variant = product.variants.find(
+                          (v) => v.flavor === flavor
+                        );
+                        setSelectedVariant(variant);
+                      }}
+                      className={`border px-4 py-2 rounded-lg ${
+                        selectedVariant?.flavor === flavor
+                          ? "bg-purple-600 text-white"
+                          : "bg-gray-100 text-gray-700"
+                      }`}
+                    >
+                      {flavor}
+                    </button>
+                  )
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Weight Selector */}
           <div className="mt-4">
             <h3 className="font-semibold">Select Weight:</h3>
             <div className="flex gap-3 mt-2 flex-wrap">
-              {weights.map((w) => (
+              {product.variants?.map((variant) => (
                 <button
-                  key={w.label}
-                  onClick={() => setSelectedWeight(w.label)}
+                  key={variant._id}
+                  onClick={() => setSelectedVariant(variant)}
                   className={`border px-4 py-2 rounded-lg ${
-                    selectedWeight === w.label
+                    selectedVariant?._id === variant._id
                       ? "bg-purple-600 text-white"
                       : "bg-gray-100 text-gray-700"
                   }`}
                 >
-                  {w.label} <br />
-                  ₹{w.price}{" "}
-                  {w.discount > 0 && (
-                    <span className="text-green-600 text-sm">({w.discount}% OFF)</span>
+                  {variant.weight}
+                  {variant.weightType} <br />
+                  ₹{variant.price}{" "}
+                  {variant.mrp > variant.price && (
+                    <span className="text-green-600 text-sm">
+                      (
+                      {Math.round(
+                        ((variant.mrp - variant.price) / variant.mrp) * 100
+                      )}
+                      % OFF)
+                    </span>
                   )}
                 </button>
               ))}
@@ -118,11 +177,27 @@ const ProductDetail = () => {
 
           {/* Long Product Info */}
           <div className="mt-6 space-y-4">
-            {Array(8).fill(
-              "Mix 1 scoop with 180-200ml water/milk post 30-45 mins of your exercise. Avatar Alpha Whey provides 20g protein per serving to support muscle recovery and growth."
-            ).map((text, i) => (
-              <p key={i} className="text-gray-600">{text}</p>
-            ))}
+            <p className="text-gray-600">{product.description}</p>
+            {product.howtoUse && (
+              <p className="text-gray-600">
+                <strong>How to use:</strong> {product.howtoUse}
+              </p>
+            )}
+            {product.countryInfo && (
+              <p className="text-gray-600">
+                <strong>Country:</strong> {product.countryInfo}
+              </p>
+            )}
+            {product.manufactureInfo && (
+              <p className="text-gray-600">
+                <strong>Manufacturer:</strong> {product.manufactureInfo}
+              </p>
+            )}
+            {product.importerInfo && (
+              <p className="text-gray-600">
+                <strong>Importer:</strong> {product.importerInfo}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -130,11 +205,7 @@ const ProductDetail = () => {
       {/* Tabs Section */}
       <div className="max-w-7xl mx-auto p-4 mt-10">
         <h2 className="text-xl font-semibold mb-3">Description</h2>
-        <p className="text-gray-600">
-          Mix 1 scoop with 180-200ml water/milk post 30-45 mins of your exercise. 
-          Avatar Alpha Whey provides 20g protein per serving to support muscle recovery 
-          and growth.
-        </p>
+        <p className="text-gray-600">{product.description}</p>
       </div>
     </div>
   );

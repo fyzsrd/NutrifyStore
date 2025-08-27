@@ -1,46 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
-import logo from "../assets/logo/nutrify-logo.png";
+import logo from "../../assets/logo/nutrify-logo.png";
+import axios from "axios";
 
-const categories = [
-  {
-    name: "Supplements",
-    to: "/c/supplements",
-    children: [
-      { name: "Pre Workout", to: "/c/supplements/preworkout" },
-      { name: "Post Workout", to: "/c/supplements/postworkout" },
-      { name: "BCAA", to: "/c/supplements/bcaa" },
-    ],
-  },
-  {
-    name: "Vitamins",
-    to: "/c/vitamins",
-    children: [
-      { name: "Multivitamins", to: "/c/vitamins/multi" },
-      { name: "Omega 3", to: "/c/vitamins/omega3" },
-    ],
-  },
-  {
-    name: "Protein",
-    to: "/c/protein",
-    children: [
-      { name: "Whey", to: "/c/protein/whey" },
-      { name: "Plant Based", to: "/c/protein/plant" },
-    ],
-  },
-  { name: "Combos", to: "/c/combos" },
-  { name: "Deals", to: "/deals" },
-];
-
-const Navbars = ({ onCartClick }) => {
+const Navbar = ({ onCartClick }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [q, setQ] = useState("");
-  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const onSearch = (e) => {
     e.preventDefault();
     window.location.href = `/search?q=${encodeURIComponent(q.trim())}`;
   };
+
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/api/nutrify/categories/`)
+      .then((res) => {
+        if (res.data.success) {
+          setCategories(res.data.categories || []);
+
+
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch categories:", err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+
+  if (loading) {
+    return <p className="text-center py-10">Loading...</p>;
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b bg-white backdrop-blur">
@@ -153,29 +148,14 @@ const Navbars = ({ onCartClick }) => {
       <nav className="bg-gray-50 border-t border-gray-200 scrollbar-hide overflow-x-scroll">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <ul className="flex space-x-6">
-            {categories.map((cat, idx) => (
-              <li key={idx} className="relative group">
+            {categories.map((cat) => (
+              <li key={cat._id} className="relative group">
                 <NavLink
-                  to={cat.to}
+                  to={`/categories/${cat._id}`} // 👈 use category ID for dynamic route
                   className="block py-3 font-medium hover:text-blue-600"
                 >
                   {cat.name}
                 </NavLink>
-
-                {/* Dropdown with group-hover */}
-                {cat.children && (
-                  <div className="absolute left-0 mt-1 w-48 rounded-lg border bg-white shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition">
-                    {cat.children.map((sub, i) => (
-                      <NavLink
-                        key={i}
-                        to={sub.to}
-                        className="block px-4 py-2 text-sm hover:bg-gray-100"
-                      >
-                        {sub.name}
-                      </NavLink>
-                    ))}
-                  </div>
-                )}
               </li>
             ))}
           </ul>
@@ -185,4 +165,4 @@ const Navbars = ({ onCartClick }) => {
   );
 };
 
-export default Navbars;
+export default Navbar;
