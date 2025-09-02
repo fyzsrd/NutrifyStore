@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { useSelector } from "react-redux"; // ✅ Import Redux hook
 import logo from "../../assets/logo/nutrify-logo.png";
 import axios from "axios";
 
@@ -8,6 +9,14 @@ const Navbar = ({ onCartClick }) => {
   const [q, setQ] = useState("");
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // ✅ Get cart items from Redux
+  const cartCount = useSelector((state) =>
+    state.cart.items.reduce((acc, item) => acc + item.quantity, 0)
+  );
+
+  const cart = useSelector((state) => state.cart.items);
+  console.log("Cart State:", cart);
 
   const onSearch = (e) => {
     e.preventDefault();
@@ -20,8 +29,6 @@ const Navbar = ({ onCartClick }) => {
       .then((res) => {
         if (res.data.success) {
           setCategories(res.data.categories || []);
-
-
         }
       })
       .catch((err) => {
@@ -31,7 +38,6 @@ const Navbar = ({ onCartClick }) => {
         setLoading(false);
       });
   }, []);
-
 
   if (loading) {
     return <p className="text-center py-10">Loading...</p>;
@@ -136,9 +142,13 @@ const Navbar = ({ onCartClick }) => {
                   <circle cx="18" cy="20" r="1.5" />
                 </svg>
               </button>
-              <span className="absolute bottom-7 right-0.5 min-w-5 items-center justify-center rounded-full bg-gray-900 px-1.5 text-xs font-medium text-white">
-                91
-              </span>
+
+              {/* ✅ Only show badge if cart has items */}
+              {cartCount > 0 && (
+                <span className="absolute bottom-7 right-0.5 min-w-5 flex items-center justify-center rounded-full bg-gray-900 px-1.5 text-xs font-medium text-white">
+                  {cartCount}
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -151,7 +161,7 @@ const Navbar = ({ onCartClick }) => {
             {categories.map((cat) => (
               <li key={cat._id} className="relative group">
                 <NavLink
-                  to={`/categories/${cat._id}`} // 👈 use category ID for dynamic route
+                  to={`/categories/${cat._id}`} // 👈 dynamic category route
                   className="block py-3 font-medium hover:text-blue-600"
                 >
                   {cat.name}

@@ -10,9 +10,9 @@ export const ProductCard = ({ product }) => {
       : 0;
 
   return (
-    <div className="w-full bg-white rounded-xl shadow hover:shadow-md transition border p-3 flex flex-col sm:w-64">
+    <div className="w-full min-h-48 bg-white rounded-xl shadow hover:shadow-md transition border p-3 flex flex-col sm:w-64">
       {/* Image + Badge */}
-      <div className="relative w-full h-48 flex-shrink-0">
+      <div className="relative w-full min-h-48 h-48 flex-shrink-0">
         <img
           src={product.images?.[0] || "/placeholder.png"}
           alt={product.name}
@@ -28,7 +28,7 @@ export const ProductCard = ({ product }) => {
       {/* Details */}
       <div className="flex flex-col flex-1 mt-3">
         {/* Title */}
-        <h3 className="text-sm font-medium text-gray-800 line-clamp-2">
+        <h3 className="text-sm font-medium text-gray-800 line-clamp-2 min-h-[2.5rem]">
           {product.name}
         </h3>
 

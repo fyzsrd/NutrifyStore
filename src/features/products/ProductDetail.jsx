@@ -2,9 +2,12 @@ import { useEffect, useState } from "react";
 import { Star, Heart, Truck, RefreshCw, ShieldCheck } from "lucide-react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { useDispatch } from "react-redux"; 
+import { addToCart } from "../../store/slices/cartSlice"; // ✅ import your slice
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const dispatch = useDispatch();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -35,6 +38,21 @@ const ProductDetail = () => {
 
   if (loading) return <p className="text-center py-10">Loading...</p>;
   if (!product) return <p className="text-center py-10">Product not found</p>;
+
+  // ✅ Add to cart handler
+  const handleAddToCart = () => {
+    if (!selectedVariant) return;
+
+    dispatch(
+      addToCart({
+        _id: selectedVariant._id,
+        name: product.name,
+        price: selectedVariant.price,
+        image: selectedVariant.images?.[0] || product.images?.[0],
+        quantity: 1, // default 1
+      })
+    );
+  };
 
   return (
     <div className="bg-white">
@@ -147,7 +165,10 @@ const ProductDetail = () => {
 
           {/* Action Buttons */}
           <div className="flex gap-4 mt-6">
-            <button className="flex-1 py-3 rounded-xl bg-purple-600 text-white font-semibold hover:bg-purple-700">
+            <button
+              onClick={handleAddToCart}
+              className="flex-1 py-3 rounded-xl bg-purple-600 text-white font-semibold hover:bg-purple-700"
+            >
               Add to Cart
             </button>
             <button className="flex-1 py-3 rounded-xl border border-purple-600 text-purple-600 font-semibold hover:bg-purple-50">
