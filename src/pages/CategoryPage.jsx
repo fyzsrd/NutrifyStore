@@ -1,15 +1,37 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import banner from '../assets/Banners/Container.png'
 import { ProductCard } from '../features/products/components/ProductCard'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
+import axios from 'axios'
 
 
 export const CategoryPage = () => {
     const { id } = useParams();
+    const [products, setProducts] = useState([]);
 
-    
-    console.log(id)
-///api/nutrify/categories/68997eea416cb8e097b83aa6/subcategories
+    useEffect(() => {
+        const fetchproductByCatgeory = async () => {
+            try {
+                const res = await axios.get(
+                    `${import.meta.env.VITE_API_URL}/api/nutrify/productBycatgeory/${id}`)
+               
+                setProducts(res.data.data)
+
+
+            } catch (error) {
+                console.error("Failed to fetch home data:", error);
+            } finally {
+                console.log('finally')
+            }
+        }
+        fetchproductByCatgeory()
+
+    },[])
+
+
+
+
+    ///api/nutrify/categories/68997eea416cb8e097b83aa6/subcategories
     return (
         <div className="max-w-7xl mx-auto px-4 py-1  sm:px-0.5 ">
             <div className="w-full h-30 overflow-hidden  mb-3.5 sm:h-64 md:h-80 lg:h-96 " >
@@ -44,8 +66,32 @@ export const CategoryPage = () => {
                     </button>
                 </div> */}
 
+                {/* <ProductCard /> */}
+                <section className="max-w-6xl mx-auto px-4">
+        <h2 className="text-xl font-semibold mb-6">Featured Products</h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {products.map((product) => (
+            <Link key={product._id} to={`/product-detail/${product._id}`}>
+              <ProductCard product={product} />
+            </Link>
+          ))}
+        </div>
+      </section>
 
 
+
+                {/* <section className="max-w-6xl mx-auto px-4">
+        <h2 className="text-xl font-semibold mb-6">Featured Products</h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {products.map((product) => (
+            <Link key={product._id} to={`/product-detail/${product._id}`}>
+              <ProductCard product={product} />
+            </Link>
+          ))}
+        </div>
+      </section> */}
                 {/* Product Card 2 */}
 
 

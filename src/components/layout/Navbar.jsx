@@ -16,7 +16,7 @@ const Navbar = ({ onCartClick }) => {
   );
 
   const cart = useSelector((state) => state.cart.items);
-  console.log("Cart State:", cart);
+  // console.log("Cart State:", cart);
 
   const onSearch = (e) => {
     e.preventDefault();

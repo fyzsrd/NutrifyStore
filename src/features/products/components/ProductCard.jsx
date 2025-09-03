@@ -2,6 +2,8 @@ import React from "react";
 
 export const ProductCard = ({ product }) => {
   if (!product) return null;
+  console.log(product)
+
 
   // calculate discount
   const discount =
@@ -40,7 +42,7 @@ export const ProductCard = ({ product }) => {
         {/* Price Section */}
         <div className="mt-1 flex items-center space-x-2">
           <span className="text-base font-bold text-gray-900">
-            ₹{product.price}
+            ₹{product.price ?? product.defaultPrice}
           </span>
           {product.mrp && (
             <>
