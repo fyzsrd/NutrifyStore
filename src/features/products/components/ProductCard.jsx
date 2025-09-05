@@ -2,21 +2,27 @@ import React from "react";
 
 export const ProductCard = ({ product }) => {
   if (!product) return null;
-  console.log(product)
+  
+
+  // Normalize data (fallbacks for different API shapes)
+  const price = product.price ?? product.defaultPrice ?? 0;
+  const mrp = product.mrp ?? product.defaultMrp ?? null;
+  const images = product.defaultThumbnail ?? null
+  const flavor = product.flavor ?? null;
+  const weight = product.weight ?? null;
+  const weightType = product.weightType ?? null;
 
 
-  // calculate discount
+  // Calculate discount
   const discount =
-    product.mrp && product.price
-      ? Math.round(((product.mrp - product.price) / product.mrp) * 100)
-      : 0;
+    mrp && price ? Math.round(((mrp - price) / mrp) * 100) : 0;
 
   return (
     <div className="w-full min-h-48 bg-white rounded-xl shadow hover:shadow-md transition border p-3 flex flex-col sm:w-64">
       {/* Image + Badge */}
       <div className="relative w-full min-h-48 h-48 flex-shrink-0">
         <img
-          src={product.images?.[0] || "/placeholder.png"}
+          src={images || "/placeholder.png"}
           alt={product.name}
           className="w-full h-full object-contain bg-gray-50 rounded-lg"
         />
@@ -35,19 +41,21 @@ export const ProductCard = ({ product }) => {
         </h3>
 
         {/* Subtext (flavor + weight) */}
-        <p className="text-xs text-gray-500">
-          {product.flavor} | {product.weight} {product.weightType}
-        </p>
+        {(flavor || weight) && (
+          <p className="text-xs text-gray-500">
+            {flavor ? flavor : ""}
+            {flavor && weight ? " | " : ""}
+            {weight ? `${weight} ${weightType}` : ""}
+          </p>
+        )}
 
         {/* Price Section */}
         <div className="mt-1 flex items-center space-x-2">
-          <span className="text-base font-bold text-gray-900">
-            ₹{product.price ?? product.defaultPrice}
-          </span>
-          {product.mrp && (
+          <span className="text-base font-bold text-gray-900">₹{price}</span>
+          {mrp && (
             <>
               <span className="line-through text-xs text-gray-400">
-                ₹{product.mrp}
+                ₹{mrp}
               </span>
               {discount > 0 && (
                 <span className="text-green-600 text-xs font-medium">

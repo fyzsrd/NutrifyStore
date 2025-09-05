@@ -108,7 +108,7 @@ const Navbar = ({ onCartClick }) => {
           {/* Right: Account + Cart */}
           <div className="flex items-center gap-1">
             <NavLink
-              to="/account"
+              to="/profile"
               className="inline-flex items-center gap-2 rounded-xl px-3 py-2 hover:bg-gray-100"
             >
               <svg
