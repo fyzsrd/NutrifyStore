@@ -1,16 +1,34 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const CartDrawer = ({ open, onClose, items = [] }) => {
-  // Disable scroll when drawer is open
+  const [shouldRender, setShouldRender] = useState(open);
+  const [animate, setAnimate] = useState(false);
+
   useEffect(() => {
-    if (open) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "auto";
+    if (open) {
+      setShouldRender(true);
+      document.body.style.overflow = "hidden";
+
+      // 👇 trigger animation after mount
+      requestAnimationFrame(() => setAnimate(true));
+    } else {
+      document.body.style.overflow = "auto";
+      setAnimate(false);
+
+      // wait for animation to finish, then unmount
+      const timeout = setTimeout(() => setShouldRender(false), 300);
+      return () => clearTimeout(timeout);
+    }
   }, [open]);
 
-  if (!open) return null;
+  if (!shouldRender) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex">
+    <div
+      className={`fixed inset-0 z-50 flex transition-opacity duration-300 ${
+        animate ? "opacity-100" : "opacity-0"
+      }`}
+    >
       {/* Overlay */}
       <div
         className="absolute inset-0 bg-black/40"
@@ -19,7 +37,11 @@ const CartDrawer = ({ open, onClose, items = [] }) => {
       />
 
       {/* Drawer */}
-      <aside className="relative ml-auto h-screen w-full lg:max-w-[40%] md:max-w-[50%] bg-white shadow-2xl flex flex-col">
+      <aside
+        className={`relative ml-auto h-screen w-full md:max-w-[50%] lg:max-w-[40%] bg-white shadow-2xl flex flex-col
+        transform transition-transform duration-300 ease-in-out
+        ${animate ? "translate-x-0" : "translate-x-full"}`}
+      >
         {/* Header */}
         <div className="flex items-center justify-between border-b px-4 py-3">
           <h2 className="text-lg font-semibold">Your Cart</h2>
@@ -28,15 +50,7 @@ const CartDrawer = ({ open, onClose, items = [] }) => {
             onClick={onClose}
             aria-label="Close cart"
           >
-            <svg
-              viewBox="0 0 24 24"
-              className="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M6 6l12 12M6 18L18 6" />
-            </svg>
+            ✕
           </button>
         </div>
 

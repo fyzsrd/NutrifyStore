@@ -39,9 +39,9 @@ const Navbar = ({ onCartClick }) => {
       });
   }, []);
 
-  if (loading) {
-    return <p className="text-center py-10">Loading...</p>;
-  }
+  // if (loading) {
+  //   return <p className="text-center py-10">Loading...</p>;
+  // }
 
   return (
     <header className="sticky top-0 z-50 border-b bg-white backdrop-blur">
@@ -162,7 +162,7 @@ const Navbar = ({ onCartClick }) => {
               <li key={cat._id} className="relative group">
                 <NavLink
                   to={`/categories/${cat._id}`} // 👈 dynamic category route
-                  className="block py-3 font-medium hover:text-blue-600"
+                  className="block py-3 font-medium hover:text-blue-600 text-sm"
                 >
                   {cat.name}
                 </NavLink>

@@ -1,16 +1,16 @@
 import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Home from '../../pages/Home'
+import Home from '../../pages/home/Home'
 import { Error404 } from '../../layouts/Error404'
-import { Dummy } from '../../pages/Dummy'
+
 import RootLayout from '../../layouts/RootLayout'
 import { CategoryPage } from '../../pages/CategoryPage'
 
 import ProductDetail from '../../features/products/ProductDetail'
 import ProfileLayout from '../../layouts/profileLayout'
-import Addresses from '../../features/profile/Addresses'
-import { Orders } from '../../features/profile/Orders'
-import ProfileOverview from '../../features/profile/ProfileOverview'
+import Addresses from '../../features/profile/components/Addresses'
+import { Orders } from '../../features/profile/components/Orders'
+
 
 const AppRoutes = () => {
 
@@ -26,10 +26,7 @@ const AppRoutes = () => {
           path: "/",
           element: <Home />
         },
-        {
-          path: "d",
-          element: <Dummy />
-        },
+        
         {
           path: 'categories/:id',
           element: <CategoryPage />
@@ -41,23 +38,23 @@ const AppRoutes = () => {
 
       ],
     },
-    {
-      path: '/profile',
-      element: <ProfileLayout />,
-      children:[
-        {
-          path:'',
-          element:<ProfileOverview />
-        },
-        {path:'addresses',
-          element:<Addresses />
-        },
-        {path:'orders',
-          element:<Orders />
-        }
-      ]
+    // {
+    //   path: '/profile',
+    //   element: <ProfileLayout />,
+    //   children:[
+    //     {
+    //       path:'',
+    //       element:<ProfileOverview />
+    //     },
+    //     {path:'addresses',
+    //       element:<Addresses />
+    //     },
+    //     {path:'orders',
+    //       element:<Orders />
+    //     }
+    //   ]
       
-    }
+    // }
 
   ]
   )

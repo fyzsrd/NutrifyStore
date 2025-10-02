@@ -12,29 +12,25 @@ const RootLayout = () => {
   const [cartOpen, setCartOpen] = useState(false);
 
   return (
-    <>
-     {/* <div className=" overflow-hidden"> */}
+    <div className="flex flex-col min-h-screen">
       {/* Navbar */}
-      <Navbar cartCount={3} onCartClick={() => setCartOpen(true)} />
-        
-         <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} items={[
-       
-      
+      <Navbar onCartClick={() => setCartOpen(true)} />
 
-      ]} />
+      {/* Cart Drawer */}
+      <CartDrawer 
+        open={cartOpen} 
+        onClose={() => setCartOpen(false)} 
+        items={[]} 
+      />
 
       {/* Page content */}
-      <main className="p-6 ">
+      <main className="flex-1 p-3">
         <Outlet />
       </main>
 
-      {/* Sidebar Cart */}
-
-
       {/* Footer */}
       <Footer />
-    {/* // </div> */}
-    </>
+    </div>
   );
 };
 
