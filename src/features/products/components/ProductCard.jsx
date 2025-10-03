@@ -1,19 +1,8 @@
 import React from "react";
 
-export const ProductCard = () => {
-  let product={
-    "_id": "68de5b0a72576ed3251628c6",
-    "name": "GNC Pro Performance 100% Whey Protein ",
-    "price": 2000,
-    "mrp": 2500,
-    "flavor": "chocolate",
-    "weight": 2,
-    "weightType": "kg",
-    "defaultThumbnail": [
-        "https://res.cloudinary.com/dzdnecqmf/image/upload/v1759402836/variants/yhvsowbdhxzn7niplebj.webp"
-    ],
-    "sku": "GNC-CP-2KG-CHOC"
-}
+export const ProductCard = ({product}) => {
+  console.log(product)
+  
  
   
 

@@ -3,7 +3,7 @@ import { Star, Heart, Truck, RefreshCw, ShieldCheck } from "lucide-react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux"; 
-import { addToCart } from "../../store/slices/cartSlice"; // ✅ import your slice
+import { addToCart } from "../../../store/slices/cartSlice"; // ✅ import your slice
 
 const ProductDetail = () => {
   const { id } = useParams();

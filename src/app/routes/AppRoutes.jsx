@@ -6,10 +6,10 @@ import { Error404 } from '../../layouts/Error404'
 import RootLayout from '../../layouts/RootLayout'
 import { CategoryPage } from '../../pages/CategoryPage'
 
-import ProductDetail from '../../features/products/ProductDetail'
-import ProfileLayout from '../../layouts/profileLayout'
-import Addresses from '../../features/profile/components/Addresses'
-import { Orders } from '../../features/profile/components/Orders'
+import ProductDetail from '../../features/products/pages/ProductDetail'
+// import ProfileLayout from '../../layouts/profileLayout'
+// import Addresses from '../../features/profile/components/Addresses'
+// import { Orders } from '../../features/profile/components/Orders'
 
 
 const AppRoutes = () => {
