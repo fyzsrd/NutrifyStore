@@ -19,7 +19,8 @@ const CategorySection = ({ CategorySectionData }) => {
 
                 {/* Dynamic categories */}
 
-                {CategorySectionData.map((c) => (
+                {CategorySectionData?.length >0 ? (
+                    CategorySectionData.map((c) => (
                     <NavLink key={c._id} to={`categories/${c._id}`}>
                         <div className='min-w-[120px] flex-shrink-0 p-4 bg-white rounded-2xl shadow hover:shadow-md text-center'>
                             <div className="h-20 w-20 mx-auto mb-2 bg-amber-200 rounded flex items-center justify-center">
@@ -34,7 +35,10 @@ const CategorySection = ({ CategorySectionData }) => {
                     </NavLink>
 
 
-                ))}
+                ))
+                ):(
+                     <p className="text-gray-500 ">No categories found</p>
+                )}
 
             </div>
         </section>
