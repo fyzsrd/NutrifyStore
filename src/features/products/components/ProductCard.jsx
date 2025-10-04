@@ -1,7 +1,8 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 
 export const ProductCard = ({product}) => {
-  console.log(product)
+
   
  
   
@@ -22,7 +23,8 @@ export const ProductCard = ({product}) => {
   return (
     <div className="text-gray-100 min-w-[168px] max-w-[168px] sm:min-w-[224px] sm:max-w-[224px] relative bg-white border-2 p-2 flex flex-col justify-between gap-2 rounded-lg">
   {/* Image */}
-  <div className="flex items-center justify-center border border-[#D6D9DD] p-2 sm:p-3 relative rounded-xl min-h-[168px] sm:min-h-[224px]">
+    <NavLink to={`product-detail/${product._id}`}>
+       <div className="flex items-center justify-center border border-[#D6D9DD] p-2 sm:p-3 relative rounded-xl min-h-[168px] sm:min-h-[224px]">
     <img
       src={images || "/placeholder.png"}
       alt={product.name}
@@ -34,6 +36,7 @@ export const ProductCard = ({product}) => {
       </span>
     )}
   </div>
+    </NavLink>
 
   {/* Details */}
   <div className="flex flex-col mt-2">
@@ -60,9 +63,9 @@ export const ProductCard = ({product}) => {
     </div>
 
     {/* CTA Button */}
-    <button className="mt-2 w-full bg-indigo-600 text-white text-sm py-2 rounded-lg hover:bg-indigo-700">
+    {/* <button className="mt-2 w-full bg-indigo-600 text-white text-sm py-2 rounded-lg hover:bg-indigo-700">
       Buy Now
-    </button>
+    </button> */}
   </div>
 </div>
   );

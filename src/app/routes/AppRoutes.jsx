@@ -4,7 +4,7 @@ import Home from '../../pages/home/Home'
 import { Error404 } from '../../layouts/Error404'
 
 import RootLayout from '../../layouts/RootLayout'
-import { CategoryPage } from '../../pages/CategoryPage'
+import { CategoryPage } from '../../pages/category/CategoryPage'
 
 import ProductDetail from '../../features/products/pages/ProductDetail'
 // import ProfileLayout from '../../layouts/profileLayout'

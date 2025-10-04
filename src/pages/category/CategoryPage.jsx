@@ -1,32 +1,15 @@
-import React, { useEffect, useState } from 'react'
-import banner from '../assets/Banners/Container.png'
-import { ProductCard } from '../features/products/components/ProductCard'
+import React from 'react'
+import banner from '../../assets/Banners/Container.png'
+import { ProductCard } from '../../features/products/components/ProductCard'
 import { Link, useParams } from 'react-router-dom'
-import axios from 'axios'
+
 
 
 export const CategoryPage = () => {
     const { id } = useParams();
-    const [products, setProducts] = useState([]);
+   console.log("category: ",id)
 
-    useEffect(() => {
-        const fetchproductByCatgeory = async () => {
-            try {
-                const res = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/api/nutrify/productBycatgeory/${id}`)
-               
-                setProducts(res.data.data)
-
-
-            } catch (error) {
-                console.error("Failed to fetch home data:", error);
-            } finally {
-                console.log('finally')
-            }
-        }
-        fetchproductByCatgeory()
-
-    },[])
+  
 
 
 
@@ -60,11 +43,11 @@ export const CategoryPage = () => {
         <h2 className="text-xl font-semibold mb-6">Featured Products</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map((product) => (
+          {/* {products.map((product) => (
             <Link key={product._id} to={`/product-detail/${product._id}`}>
               <ProductCard product={product} />
             </Link>
-          ))}
+          ))} */}
         </div>
       </section>
 
