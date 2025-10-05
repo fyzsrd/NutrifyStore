@@ -3,9 +3,6 @@ import { ProductCard } from "../../features/products/components/ProductCard";
 import HeroSection from "./components/HeroSection";
 import CategorySection from "./components/CategorySection";
 import { ProductCardShimmer } from "../../features/products/components/skeletons/ProductCardShimmer";
-
-
-import Lottie from "lottie-react";
 import NoDataFoundBox from "../../components/common/NoDataFoundBox";
 import { useGetFeaturedProductsQuery, useGetSubCategoriesQuery } from "./api/productHomeApi";
 import CategorySectionShimmer from "./components/skeletons/CategorySectionShimmer";

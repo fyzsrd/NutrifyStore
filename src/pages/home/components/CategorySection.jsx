@@ -22,14 +22,14 @@ const CategorySection = ({ CategorySectionData }) => {
                 {CategorySectionData?.length >0 ? (
                     CategorySectionData.map((c) => (
                     <NavLink key={c._id} to={`categories/${c._id}`}>
-                        <div className='min-w-[120px] flex-shrink-0 p-4 bg-white rounded-2xl shadow hover:shadow-md text-center'>
-                            <div className="h-20 w-20 mx-auto mb-2 bg-amber-200 rounded flex items-center justify-center">
+                        <div className='min-w-32 min-h-full flex-shrink-0 p-4 bg-blue-400 rounded-2xl shadow hover:shadow-md text-center'>
+                            <div className="mx-auto mb-2 bg-amber-200 rounded flex items-center justify-center">
                                 <img
                                     src={c.thumbnail} alt={c.name}
-                                    className='rounded'
+                                    className='rounded object-cover w-full h-full'
                                 />
                             </div>
-                            <p className="font-medium">{c.name}</p>
+                            {/* <p className="font-medium">{c.name}</p> */}
                         </div>
 
                     </NavLink>

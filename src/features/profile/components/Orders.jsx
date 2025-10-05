@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const Orders = () => {
+ const Orders = () => {
   return (
     <div>
       <h1 className="text-2xl font-semibold mb-4">My Orders</h1>
@@ -77,3 +77,5 @@ export const Orders = () => {
     </div>
   )
 }
+
+export default Orders

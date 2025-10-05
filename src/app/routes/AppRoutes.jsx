@@ -4,14 +4,14 @@ import Home from '../../pages/home/Home'
 import { Error404 } from '../../layouts/Error404'
 
 import RootLayout from '../../layouts/RootLayout'
-import { CategoryPage } from '../../pages/category/CategoryPage'
+
 
 import ProductDetail from '../../features/products/pages/ProductDetail'
-// import ProfileLayout from '../../layouts/profileLayout'
-// import Addresses from '../../features/profile/components/Addresses'
-// import { Orders } from '../../features/profile/components/Orders'
-
-
+import { CategoryPage } from '../../pages/category/pages/CategoryPage'
+import ProfileLayout from '../../layouts/ProfileLayout'
+import ProfileOverview from '../../features/profile/components/ProfileOverview'
+import Addresses from '../../features/profile/components/Addresses'
+ import Orders from  '../../features/profile/components/Orders'
 const AppRoutes = () => {
 
 
@@ -38,23 +38,23 @@ const AppRoutes = () => {
 
       ],
     },
-    // {
-    //   path: '/profile',
-    //   element: <ProfileLayout />,
-    //   children:[
-    //     {
-    //       path:'',
-    //       element:<ProfileOverview />
-    //     },
-    //     {path:'addresses',
-    //       element:<Addresses />
-    //     },
-    //     {path:'orders',
-    //       element:<Orders />
-    //     }
-    //   ]
+    {
+      path: '/profile',
+      element: <ProfileLayout />,
+      children:[
+        {
+          path:'',
+          element:<ProfileOverview />
+        },
+        {path:'addresses',
+          element:<Addresses />
+        },
+        {path:'orders',
+          element:<Orders />
+        }
+      ]
       
-    // }
+    }
 
   ]
   )
