@@ -3,11 +3,6 @@ import { NavLink } from "react-router-dom";
 
 export const ProductCard = ({product}) => {
 
-  console.log(product._id)
-
-  
- 
-  
 
   // Normalize data (fallbacks for different API shapes)
   const price = product.price ?? product.defaultPrice ?? 0;

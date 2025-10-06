@@ -1,42 +1,36 @@
 import { useEffect, useState } from "react";
 import { Star, Heart, Truck, RefreshCw, ShieldCheck } from "lucide-react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
-import { useDispatch } from "react-redux"; 
-import { addToCart } from "../../../store/slices/cartSlice"; // ✅ import your slice
+
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../../store/slices/cartSlice"; 
+import { useGetFullProductDetailsQuery } from "../api/productsApi";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState(null);
+  
+  const [mainImage, setMainImage] = useState("")
+  const { data: product, isLoading: productDeatilsLoading } = useGetFullProductDetailsQuery(id)
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const res = await axios.get(`http://localhost:3000/api/nutrify/home/${id}`);
-        setProduct(res.data);
+    if (product && product.defaultVariantId) {
+      const defaultVariant = product.variants.find(
+        (v) => v._id === product.defaultVariantId
+      );
+      setSelectedVariant(defaultVariant);
+      setMainImage(defaultVariant?.images?.[0] || product.images?.[0]);
+    } else if (product && product.images.length > 0) {
+      setMainImage(product.images[0]);
+    }
+  }, [product]);
 
-        // Pick default variant or first one
-        if (res.data.variants?.length > 0) {
-          const def =
-            res.data.variants.find((v) => v.isDefault) ||
-            res.data.variants[0];
-          setSelectedVariant(def);
-        }
-      } catch (error) {
-        console.error("Failed to load product:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  console.log("selected variant ", selectedVariant)
+  console.log(product)
 
-    fetchProduct();
-  }, [id]);
 
-  if (loading) return <p className="text-center py-10">Loading...</p>;
+  if (productDeatilsLoading) return <p className="text-center py-10">Loading...</p>;
   if (!product) return <p className="text-center py-10">Product not found</p>;
 
   // ✅ Add to cart handler
@@ -61,29 +55,35 @@ const ProductDetail = () => {
         {/* Left - Product Images */}
         <div className="flex flex-col items-center md:sticky md:top-20 self-start">
           <img
-            src={selectedVariant?.images?.[0] || product.images?.[0]}
+            src={mainImage}
             alt={product.name}
             className="w-80 h-80 object-contain"
           />
+
           <div className="flex gap-2 mt-4 flex-wrap">
-            {(selectedVariant?.images?.length
-              ? selectedVariant.images
-              : product.images || []
-            ).map((img, i) => (
+            {/* Variant images */}
+            {selectedVariant?.images?.map((img, i) => (
               <div
                 key={i}
                 className="w-16 h-16 border rounded-lg flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-purple-500"
-                onClick={() =>
-                  setSelectedVariant({ ...selectedVariant, images: [img] })
-                }
+                onClick={() => setMainImage(img)}
               >
-                <img
-                  src={img}
-                  alt="thumb"
-                  className="w-12 h-12 object-contain"
-                />
+                <img src={img} alt="thumb" className="w-12 h-12 object-contain" />
               </div>
             ))}
+
+            {/* Product images */}
+            {product.images?.map((img, i) =>
+              !selectedVariant?.images?.includes(img) ? ( // to avoid duplicates
+                <div
+                  key={i}
+                  className="w-16 h-16 border rounded-lg flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-purple-500"
+                  onClick={() => setMainImage(img)}
+                >
+                  <img src={img} alt="thumb" className="w-12 h-12 object-contain" />
+                </div>
+              ) : null
+            )}
           </div>
         </div>
 
@@ -118,11 +118,10 @@ const ProductDetail = () => {
                         );
                         setSelectedVariant(variant);
                       }}
-                      className={`border px-4 py-2 rounded-lg ${
-                        selectedVariant?.flavor === flavor
+                      className={`border px-4 py-2 rounded-lg ${selectedVariant?.flavor === flavor
                           ? "bg-purple-600 text-white"
                           : "bg-gray-100 text-gray-700"
-                      }`}
+                        }`}
                     >
                       {flavor}
                     </button>
@@ -140,11 +139,10 @@ const ProductDetail = () => {
                 <button
                   key={variant._id}
                   onClick={() => setSelectedVariant(variant)}
-                  className={`border px-4 py-2 rounded-lg ${
-                    selectedVariant?._id === variant._id
+                  className={`border px-4 py-2 rounded-lg ${selectedVariant?._id === variant._id
                       ? "bg-purple-600 text-white"
                       : "bg-gray-100 text-gray-700"
-                  }`}
+                    }`}
                 >
                   {variant.weight}
                   {variant.weightType} <br />
