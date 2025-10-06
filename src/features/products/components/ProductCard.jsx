@@ -37,9 +37,11 @@ export const ProductCard = ({product}) => {
 
   {/* Details */}
   <div className="flex flex-col sm:mt-2">
+      <NavLink to={`/product-detail/${product._id}`}>
     <h3 className="text-xs sm:text-sm md:text-base font-medium text-gray-800 line-clamp-2 ">
       {product.name}
     </h3>
+    </NavLink>
     {(flavor || weight) && (
       <p className="text-xs text-gray-500 mt-0.5">
         {flavor ? flavor : ""}{flavor && weight ? " | " : ""}{weight ? `${weight} ${weightType}` : ""}

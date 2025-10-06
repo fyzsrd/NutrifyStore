@@ -3,9 +3,10 @@ import { Outlet } from "react-router-dom";
 
 
 import { useState } from "react";
-import CartDrawer from '../features/cart/CartPage'
+
 
 import { Navbar, Footer } from "../components/index";
+import CartDrawer from "../features/cart/components/CartDrawer";
 
 const RootLayout = () => {
 
@@ -20,7 +21,7 @@ const RootLayout = () => {
       <CartDrawer 
         open={cartOpen} 
         onClose={() => setCartOpen(false)} 
-        items={[]} 
+       
       />
 
       {/* Page content */}
