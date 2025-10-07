@@ -1,42 +1,35 @@
 import { useEffect, useState } from "react";
 import { Star, Heart, Truck, RefreshCw, ShieldCheck } from "lucide-react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
-import { useDispatch } from "react-redux"; 
-import { addToCart } from "../../../store/slices/cartSlice"; // ✅ import your slice
+
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../../store/slices/cartSlice";
+import { useGetFullProductDetailsQuery } from "../api/productsApi";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState(null);
 
+  const [mainImage, setMainImage] = useState(null)
+  const { data: product, isLoading: productDetailsLoading } = useGetFullProductDetailsQuery(id)
+
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const res = await axios.get(`http://localhost:3000/api/nutrify/home/${id}`);
-        setProduct(res.data);
+    if (product && product.defaultVariantId) {
+      const defaultVariant = product.variants.find(
+        (v) => v._id === product.defaultVariantId
+      );
+      setSelectedVariant(defaultVariant);
+      setMainImage(defaultVariant?.images?.[0] || product.images?.[0]);
+    } else if (product && product.images.length > 0) {
+      setMainImage(product.images[0]);
+    }
+  }, [product]);
 
-        // Pick default variant or first one
-        if (res.data.variants?.length > 0) {
-          const def =
-            res.data.variants.find((v) => v.isDefault) ||
-            res.data.variants[0];
-          setSelectedVariant(def);
-        }
-      } catch (error) {
-        console.error("Failed to load product:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    fetchProduct();
-  }, [id]);
 
-  if (loading) return <p className="text-center py-10">Loading...</p>;
+
+  if (productDetailsLoading) return <p className="text-center py-10">Loading...</p>;
   if (!product) return <p className="text-center py-10">Product not found</p>;
 
   // ✅ Add to cart handler
@@ -61,42 +54,51 @@ const ProductDetail = () => {
         {/* Left - Product Images */}
         <div className="flex flex-col items-center md:sticky md:top-20 self-start">
           <img
-            src={selectedVariant?.images?.[0] || product.images?.[0]}
+            src={mainImage}
             alt={product.name}
             className="w-80 h-80 object-contain"
           />
+
           <div className="flex gap-2 mt-4 flex-wrap">
-            {(selectedVariant?.images?.length
-              ? selectedVariant.images
-              : product.images || []
-            ).map((img, i) => (
+            {/* Variant images */}
+            {selectedVariant?.images?.map((img, i) => (
               <div
                 key={i}
                 className="w-16 h-16 border rounded-lg flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-purple-500"
-                onClick={() =>
-                  setSelectedVariant({ ...selectedVariant, images: [img] })
-                }
+                onClick={() => setMainImage(img)}
               >
-                <img
-                  src={img}
-                  alt="thumb"
-                  className="w-12 h-12 object-contain"
-                />
+                <img src={img} alt="thumb" className="w-12 h-12 object-contain" />
               </div>
             ))}
+
+            {/* Product images */}
+            {product.images?.map((img, i) =>
+              !selectedVariant?.images?.includes(img) ? ( // to avoid duplicates
+                <div
+                  key={i}
+                  className="w-16 h-16 border rounded-lg flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-purple-500"
+                  onClick={() => setMainImage(img)}
+                >
+                  <img src={img} alt="thumb" className="w-12 h-12 object-contain" />
+                </div>
+              ) : null
+            )}
           </div>
         </div>
 
         {/* Right - Product Info */}
         <div>
+          <hr className="border border-gray-300 rounded-full my-4 shadow-sm" />
           <h1 className="text-2xl font-bold">{product.name}</h1>
 
           <div className="flex items-center gap-2 mt-2">
             <span className="text-yellow-500 flex items-center gap-1">
-              <Star className="w-4 h-4 fill-yellow-500" /> 4.6
+              <Star className="w-4 h-4 fill-yellow-500" /> Trusted
             </span>
-            <span className="text-gray-600">(224 reviews)</span>
+
           </div>
+
+          <hr className="border-t-1 border-gray-300 rounded-full my-4 shadow-sm" />
 
           <p className="text-2xl font-semibold mt-4">
             ₹{selectedVariant?.price || product.price}
@@ -118,11 +120,10 @@ const ProductDetail = () => {
                         );
                         setSelectedVariant(variant);
                       }}
-                      className={`border px-4 py-2 rounded-lg ${
-                        selectedVariant?.flavor === flavor
-                          ? "bg-purple-600 text-white"
-                          : "bg-gray-100 text-gray-700"
-                      }`}
+                      className={`border cursor-pointer px-4 py-2 rounded-lg ${selectedVariant?.flavor === flavor
+                        ? "bg-purple-600 text-white"
+                        : "bg-gray-100 text-gray-700"
+                        }`}
                     >
                       {flavor}
                     </button>
@@ -140,17 +141,16 @@ const ProductDetail = () => {
                 <button
                   key={variant._id}
                   onClick={() => setSelectedVariant(variant)}
-                  className={`border px-4 py-2 rounded-lg ${
-                    selectedVariant?._id === variant._id
-                      ? "bg-purple-600 text-white"
-                      : "bg-gray-100 text-gray-700"
-                  }`}
+                  className={`border cursor-pointer px-4 py-2 rounded-lg ${selectedVariant?._id === variant._id
+                    ? "border-purple-600 border-2"
+                    : "bg-gray-100 text-gray-700"
+                    }`}
                 >
                   {variant.weight}
                   {variant.weightType} <br />
                   ₹{variant.price}{" "}
                   {variant.mrp > variant.price && (
-                    <span className="text-green-600 text-sm">
+                    <span className={`text-green-600 font-bold text-sm `}>
                       (
                       {Math.round(
                         ((variant.mrp - variant.price) / variant.mrp) * 100
@@ -167,11 +167,11 @@ const ProductDetail = () => {
           <div className="flex gap-4 mt-6">
             <button
               onClick={handleAddToCart}
-              className="flex-1 py-3 rounded-xl bg-purple-600 text-white font-semibold hover:bg-purple-700"
+              className="flex-1 py-3 cursor-pointer rounded-xl bg-purple-600 text-white font-semibold hover:bg-purple-700"
             >
               Add to Cart
             </button>
-            <button className="flex-1 py-3 rounded-xl border border-purple-600 text-purple-600 font-semibold hover:bg-purple-50">
+            <button className="flex-1 py-3  cursor-pointer rounded-xl border border-purple-600 text-purple-600 font-semibold hover:bg-purple-50">
               Buy Now
             </button>
           </div>
@@ -198,16 +198,23 @@ const ProductDetail = () => {
 
           {/* Long Product Info */}
           <div className="mt-6 space-y-4">
+            <hr className="border-t-1 border-gray-300 rounded-full my-4 shadow-sm" />
             <p className="text-gray-600">{product.description}</p>
             {product.howtoUse && (
-              <p className="text-gray-600">
-                <strong>How to use:</strong> {product.howtoUse}
-              </p>
+              <>
+              <hr className="border-t-1 border-gray-300 rounded-full my-4 shadow-sm" />
+                <p className="text-gray-600">
+                  <strong>How to use:</strong> {product.howtoUse}
+                </p></>
             )}
+
             {product.countryInfo && (
-              <p className="text-gray-600">
-                <strong>Country:</strong> {product.countryInfo}
-              </p>
+              <>
+                <hr className="border-t-1 border-gray-300 rounded-full my-4 shadow-sm" />
+                <p className="text-gray-600">
+                  <strong>Country:</strong> {product.countryInfo}
+                </p>
+              </>
             )}
             {product.manufactureInfo && (
               <p className="text-gray-600">
@@ -225,6 +232,7 @@ const ProductDetail = () => {
 
       {/* Tabs Section */}
       <div className="max-w-7xl mx-auto p-4 mt-10">
+        <hr className="border-t-1 border-gray-300 rounded-full my-4 shadow-sm" />
         <h2 className="text-xl font-semibold mb-3">Description</h2>
         <p className="text-gray-600">{product.description}</p>
       </div>

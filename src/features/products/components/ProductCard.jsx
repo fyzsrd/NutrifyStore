@@ -3,9 +3,6 @@ import { NavLink } from "react-router-dom";
 
 export const ProductCard = ({product}) => {
 
-  
- 
-  
 
   // Normalize data (fallbacks for different API shapes)
   const price = product.price ?? product.defaultPrice ?? 0;
@@ -21,9 +18,9 @@ export const ProductCard = ({product}) => {
     mrp && price ? Math.round(((mrp - price) / mrp) * 100) : 0;
 
   return (
-    <div className="text-gray-100 min-w-[168px] max-w-[168px] sm:min-w-[224px] sm:max-w-[224px] relative bg-white border-2 p-2 flex flex-col justify-between gap-2 rounded-lg">
+    <div className="text-gray-100 min-w-[140px] max-w-[168px] sm:min-w-[224px] sm:max-w-[224px] relative bg-white border-2 p-2 flex flex-col justify-between gap-2 rounded-lg">
   {/* Image */}
-    <NavLink to={`product-detail/${product._id}`}>
+    <NavLink to={`/product-detail/${product._id}`}>
        <div className="flex items-center justify-center border border-[#D6D9DD] p-2 sm:p-3 relative rounded-xl min-h-[168px] sm:min-h-[224px]">
     <img
       src={images || "/placeholder.png"}
@@ -39,10 +36,12 @@ export const ProductCard = ({product}) => {
     </NavLink>
 
   {/* Details */}
-  <div className="flex flex-col mt-2">
-    <h3 className="text-sm font-medium text-gray-800 line-clamp-2">
+  <div className="flex flex-col sm:mt-2">
+      <NavLink to={`/product-detail/${product._id}`}>
+    <h3 className="text-xs sm:text-sm md:text-base font-medium text-gray-800 line-clamp-2 ">
       {product.name}
     </h3>
+    </NavLink>
     {(flavor || weight) && (
       <p className="text-xs text-gray-500 mt-0.5">
         {flavor ? flavor : ""}{flavor && weight ? " | " : ""}{weight ? `${weight} ${weightType}` : ""}
@@ -55,9 +54,7 @@ export const ProductCard = ({product}) => {
       {mrp && (
         <>
           <span className="line-through text-xs text-gray-400">₹{mrp}</span>
-          {discount > 0 && (
-            <span className="text-green-600 text-xs font-medium">{discount}% OFF</span>
-          )}
+          
         </>
       )}
     </div>
