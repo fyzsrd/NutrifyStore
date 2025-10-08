@@ -12,6 +12,7 @@ import ProfileLayout from '../../layouts/ProfileLayout'
 import ProfileOverview from '../../features/profile/components/ProfileOverview'
 import Addresses from '../../features/profile/components/Addresses'
  import Orders from  '../../features/profile/components/Orders'
+
 const AppRoutes = () => {
 
 
@@ -54,7 +55,8 @@ const AppRoutes = () => {
         }
       ]
       
-    }
+    },
+   
 
   ]
   )

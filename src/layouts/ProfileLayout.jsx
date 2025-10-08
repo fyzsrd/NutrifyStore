@@ -1,10 +1,28 @@
 
 import { NavLink, Outlet } from "react-router-dom";
 import { Navbar } from "../components";
+import { useSelector } from "react-redux";
+import AuthPopUp from "../features/auth/AuthPopUp";
+import { useEffect, useState } from "react";
 
 const ProfileLayout = () => {
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const [isLoginPop, setIsLoginPop] = useState(false);
+
+  console.log("isuath",isAuthenticated)
+ useEffect(() => {
+    if (!isAuthenticated) {
+      setIsLoginPop(true);
+    } else {
+      setIsLoginPop(false);
+    }
+  }, [isAuthenticated]);
+  
   return (
     <>
+
+     {isLoginPop && <AuthPopUp onClose={() => setIsLoginPop(false)} />}
+   
       <Navbar />
 
       <div className="min-h-screen fixed w-full flex flex-col md:flex-row bg-amber-200">
