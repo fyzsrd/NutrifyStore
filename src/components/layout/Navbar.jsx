@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { useSelector } from "react-redux"; // ✅ Import Redux hook
+import { useDispatch, useSelector } from "react-redux"; // ✅ Import Redux hook
 import logo from "../../assets/logo/nutrify-logo.png";
 import axios from "axios";
+import { Satellite } from "lucide-react";
+import { logout } from "../../store/slices/authSlice";
 
 const Navbar = ({ onCartClick }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -10,34 +12,26 @@ const Navbar = ({ onCartClick }) => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Get cart items from Redux
+  const dispatch=useDispatch()
+
+  const user= useSelector((state)=>state.auth.user)
+
   const cartCount = useSelector((state) =>
     state.cart.items.reduce((acc, item) => acc + item.quantity, 0)
   );
+ const cart = useSelector((state) => state.cart.items);
 
-  const cart = useSelector((state) => state.cart.items);
-  // console.log("Cart State:", cart);
 
   const onSearch = (e) => {
     e.preventDefault();
     window.location.href = `/search?q=${encodeURIComponent(q.trim())}`;
   };
 
-  useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/api/nutrify/categories/`)
-      .then((res) => {
-        if (res.data.success) {
-          setCategories(res.data.categories || []);
-        }
-      })
-      .catch((err) => {
-        console.error("Failed to fetch categories:", err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+  const handleLogOut =()=>{
+    dispatch(logout())
+  }
+
+
 
   // if (loading) {
   //   return <p className="text-center py-10">Loading...</p>;
@@ -123,6 +117,11 @@ const Navbar = ({ onCartClick }) => {
               </svg>
               <span className="hidden sm:inline">Account</span>
             </NavLink>
+            {user && <div>
+               <button 
+               onClick={handleLogOut}
+                className="bg-red-300 px-1 rounded cursor-pointer sm:inline">logOut</button>
+            </div>}
 
             <div className="relative">
               <button

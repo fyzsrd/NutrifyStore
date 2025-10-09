@@ -1,9 +1,35 @@
-import { Children } from "react";
+
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
+import AuthPopUp from "../../features/auth/AuthPopUp";
 
 
-export const PrivateRoute=({children})=>{
-    const isAuth=useSelector((state)=>state.auth.isAuthenticated);
-    return isAuth ? children : <Navigate to='/login' replace />
+export const PrivateRoute=()=>{
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
+     const [showPopUp, setShowPopUp] =useState(false)
+
+     const navigate=useNavigate()
+      useEffect(() => {
+    if (!isAuthenticated) {
+      setShowPopUp(true);
+    } else {
+      setShowPopUp(false);
+    }
+  }, [isAuthenticated]);
+
+   const handleClosePopUp =()=>{
+    setShowPopUp(false)
+    if(!isAuthenticated){
+      navigate('/',{replace:true})
+    }
+  }
+
+  if(!isAuthenticated & showPopUp){
+    return <AuthPopUp onClose={handleClosePopUp} /> 
+  }
+
+
+  return <Outlet /> 
 }

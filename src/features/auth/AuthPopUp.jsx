@@ -1,7 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { X } from "lucide-react"; // optional icon
+import Login from "./components/Login";
+import OtpVerify from "./components/OtpVerify";
+
 
 const AuthPopUp = ({ onClose }) => {
+    const [otpSent, setOtpSent] = useState(false);
+  const [mobileData, setMobileData] = useState(null);
+  
+
+  const handleOtpSent = (mobile) => {
+    setOtpSent(true);
+    
+    setMobileData(mobile); // store anything returned from API (e.g. session id)
+  };
+   
+   
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50 px-4">
       {/* Popup container */}
@@ -14,34 +28,9 @@ const AuthPopUp = ({ onClose }) => {
           <X size={20} />
         </button>
 
-        <h2 className="text-xl font-semibold text-center mb-4">Login</h2>
-        <p className="text-sm text-gray-600 text-center mb-6">
-          Enter your mobile number to continue
-        </p>
-
-        <form className="space-y-4">
-          <div>
-            <label
-              htmlFor="mobile"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Mobile Number
-            </label>
-            <input
-              type="tel"
-              id="mobile"
-              placeholder="e.g. 9876543210"
-              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-          >
-            Get OTP
-          </button>
-        </form>
+        {!otpSent ? <Login onOtpSent={handleOtpSent} /> : <OtpVerify mobileData={mobileData} />}
+        
+      
       </div>
     </div>
   );
