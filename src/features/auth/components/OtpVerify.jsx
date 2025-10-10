@@ -5,25 +5,24 @@ import { setCredentials } from '../../../store/slices/authSlice';
 
 const OtpVerify = ({mobileData }) => {
     const [otp,setOtp]=useState("")
-    const[verifyOtp ,{data,isloading,Error}]=useVerifyOtpMutation();
+    const[verifyOtp ,{isloading,Error}]=useVerifyOtpMutation();
     const dispatch=useDispatch()
     
 
-    const handleVerify= async (e)=>{
-        e.preventDefault();
-        console.log("opt going to verify",mobileData)
-        try{
-            const res=await verifyOtp({mobile:mobileData,otp})
-          console.log("✅ OTP Verified Response:", res);
-          dispatch(setCredentials({
-            user:res?.data?.user,
-            token:res.data?.token
-          }))
+   const handleVerify = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await verifyOtp({ mobile: mobileData, otp }).unwrap();
+    console.log("✅ OTP Verified Response:", res);
 
-        }catch (err) {
-        console.error("❌ Failed to verify:", err);
-    }
-    }
+    dispatch(setCredentials({
+      user: res.user,   // ✅ match API response keys
+      token: res.token
+    }));
+  } catch (err) {
+    console.error("❌ Failed to verify:", err);
+  }
+};
   return (
    <form onSubmit={handleVerify} className="space-y-4">
       <h2 className="text-xl font-semibold text-center mb-4">Verify OTP</h2>
@@ -36,9 +35,10 @@ const OtpVerify = ({mobileData }) => {
       />
       <button
         type="submit"
+        disabled={isloading}
         className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition"
       >
-        Verify OTP
+      {isloading ? "verifing.." : "Verify OTP"}
       </button>
     </form>
   )

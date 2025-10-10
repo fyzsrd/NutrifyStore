@@ -3,7 +3,7 @@ import { useSendOtpMutation } from "../api/authApi"; // ✅ use the new mutation
 
 const Login = ({ onOtpSent }) => {
   const [mobile, setMobile] = useState("");
-  const [sendOtp, { data, isLoading, error }] = useSendOtpMutation();
+  const [sendOtp, {  isLoading, error }] = useSendOtpMutation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -4,6 +4,7 @@ let storedAuth = null
 try {
     storedAuth = JSON.parse(localStorage.getItem("auth"))
 } catch (e) {
+   
     storedAuth = null
 }
 // const storedAuth = JSON.parse(localStorage.getItem("auth") || "{}");
