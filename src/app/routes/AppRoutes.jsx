@@ -9,9 +9,11 @@ import RootLayout from '../../layouts/RootLayout'
 import ProductDetail from '../../features/products/pages/ProductDetail'
 import { CategoryPage } from '../../pages/category/pages/CategoryPage'
 import ProfileLayout from '../../layouts/ProfileLayout'
-import ProfileOverview from '../../features/profile/components/ProfileOverview'
-import Addresses from '../../features/profile/components/Addresses'
- import Orders from  '../../features/profile/components/Orders'
+import ProfileOverview from '../../features/profile/pages/ProfileOverview'
+import Addresses from '../../features/profile/pages/Addresses'
+import Orders from '../../features/profile/pages/Orders'
+import { PrivateRoute } from './PrivateRoute'
+
 const AppRoutes = () => {
 
 
@@ -26,7 +28,7 @@ const AppRoutes = () => {
           path: "/",
           element: <Home />
         },
-        
+
         {
           path: 'categories/:id',
           element: <CategoryPage />
@@ -40,21 +42,31 @@ const AppRoutes = () => {
     },
     {
       path: '/profile',
-      element: <ProfileLayout />,
-      children:[
+      element: <PrivateRoute />,
+      children: [
         {
-          path:'',
-          element:<ProfileOverview />
-        },
-        {path:'addresses',
-          element:<Addresses />
-        },
-        {path:'orders',
-          element:<Orders />
+          element: <ProfileLayout />,
+          children: [
+            {
+              path: '',
+              element: <ProfileOverview />,
+              
+            },
+            {
+              path: 'addresses',
+              element: <Addresses />
+            },
+            {
+              path: 'orders',
+              element: <Orders />
+            }
+          ]
         }
+
       ]
-      
-    }
+
+    },
+
 
   ]
   )

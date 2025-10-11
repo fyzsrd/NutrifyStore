@@ -10,7 +10,7 @@ const CartDrawer = ({ open, onClose, }) => {
 
   const items = useSelector((state) => state.cart.items)
 
-  console.log(items)
+  // console.log(items)
   
 
   const handleRemove = (_id) => {
@@ -90,6 +90,10 @@ const CartDrawer = ({ open, onClose, }) => {
                   />
                   <div className="flex flex-col">
                     <p className="font-medium text-gray-800">{item.name}</p>
+                    <div className="flex gap-2">
+                      <p className="text-sm text-gray-500 ">{item.selectedVariant.flavor}</p>
+                     <p className="text-sm text-gray-500 ">{item.selectedVariant.weight} {" "} {item.selectedVariant.weightType}</p>
+                    </div>
                     <p className="text-sm text-gray-500 mt-1">
                       ₹{item.price} ×{" "}
                       <input
@@ -106,9 +110,9 @@ const CartDrawer = ({ open, onClose, }) => {
                 </div>
 
                 {/* Right - Total & Remove */}
-                <div className="flex items-center gap-4 mt-2 md:mt-0">
+                <div className="flex items-center gap-7 mt-2 md:mt-0">
                   <p className="font-semibold text-gray-800 text-lg">
-                    ₹{item.price * item.quantity}
+                    ₹ {item.price * item.quantity}
                   </p>
                   <button
                     onClick={() => handleRemove(item._id)}

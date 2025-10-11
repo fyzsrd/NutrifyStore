@@ -1,12 +1,29 @@
 
-import { NavLink, Outlet } from "react-router-dom";
+import {  NavLink, Outlet } from "react-router-dom";
 import { Navbar } from "../components";
 
+import { useState } from "react";
+import CartDrawer from "../features/cart/components/CartDrawer";
+
+
 const ProfileLayout = () => {
+  
+  const [cartOpen, setCartOpen] = useState(false);
+
+
+
   return (
     <>
-      <Navbar />
 
+    
+   
+      <Navbar onCartClick={() => setCartOpen(true)} />
+
+       <CartDrawer 
+        open={cartOpen} 
+        onClose={() => setCartOpen(false)} 
+       
+      />
       <div className="min-h-screen fixed w-full flex flex-col md:flex-row bg-amber-200">
         {/* Sidebar (desktop) */}
         <aside className="hidden md:block w-64 bg-white shadow-lg p-6">

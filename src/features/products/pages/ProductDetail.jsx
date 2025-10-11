@@ -40,6 +40,7 @@ const ProductDetail = () => {
       addToCart({
         _id: selectedVariant._id,
         name: product.name,
+        selectedVariant,
         price: selectedVariant.price,
         image: selectedVariant.images?.[0] || product.images?.[0],
         quantity: 1, // default 1
