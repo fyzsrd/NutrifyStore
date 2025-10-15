@@ -1,25 +1,29 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux"; // ✅ Import Redux hook
 import logo from "../../assets/logo/nutrify-logo.png";
-import axios from "axios";
 import { Satellite } from "lucide-react";
 import { logout } from "../../store/slices/authSlice";
+import { useGetCartQuery } from "../../features/cart/api/cartApi";
+import { clearGuestCart } from "../../store/slices/cartSlice";
 
 const Navbar = ({ onCartClick }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [q, setQ] = useState("");
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch()
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated)
+  const guestItems = useSelector((state) => state.cart.items);
+  const { data: userCart } = useGetCartQuery(undefined, { skip: !isAuthenticated })
 
-  const dispatch=useDispatch()
 
-  const user= useSelector((state)=>state.auth.user)
 
-  const cartCount = useSelector((state) =>
-    state.cart.items.reduce((acc, item) => acc + item.quantity, 0)
-  );
- const cart = useSelector((state) => state.cart.items);
+  const cart = useSelector((state) => state.cart.items);
+const cartItems=isAuthenticated ? (userCart?.data?.items || []) : guestItems;
+
+  const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
 
 
   const onSearch = (e) => {
@@ -27,8 +31,10 @@ const Navbar = ({ onCartClick }) => {
     window.location.href = `/search?q=${encodeURIComponent(q.trim())}`;
   };
 
-  const handleLogOut =()=>{
+  const handleLogOut = () => {
     dispatch(logout())
+    dispatch(clearGuestCart())
+    
   }
 
 
@@ -117,9 +123,9 @@ const Navbar = ({ onCartClick }) => {
               </svg>
               <span className="hidden sm:inline">Account</span>
             </NavLink>
-            {user && <div>
-               <button 
-               onClick={handleLogOut}
+            {isAuthenticated && <div>
+              <button
+                onClick={handleLogOut}
                 className="bg-red-300 px-1 rounded cursor-pointer sm:inline">logOut</button>
             </div>}
 
