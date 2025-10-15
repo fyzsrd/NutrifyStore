@@ -7,6 +7,8 @@ import { addGuestItem } from "../../../store/slices/cartSlice";
 import { useGetFullProductDetailsQuery } from "../api/productsApi";
 import { useAddItemToCartMutation } from "../../cart/api/cartApi";
 import { toast } from "react-toastify";
+import { ClipLoader } from "react-spinners";
+import ProductDetailSkeleton from "../components/skeletons/ProductDetailSkeleton";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -33,7 +35,7 @@ const ProductDetail = () => {
 
 
 
-  if (productDetailsLoading) return <p className="text-center py-10">Loading...</p>;
+  if (productDetailsLoading) return <ProductDetailSkeleton />
   if (!product) return <p className="text-center py-10">Product not found</p>;
 
   // ✅ Add to cart handler
@@ -193,7 +195,7 @@ const ProductDetail = () => {
               onClick={handleAddToCart}
               className="flex-1 py-3 cursor-pointer rounded-xl bg-purple-600 text-white font-semibold hover:bg-purple-700"
             >
-              Add to Cart
+            {isLoading ? <ClipLoader /> : "add to cart "}
             </button>
             <button className="flex-1 py-3  cursor-pointer rounded-xl border border-purple-600 text-purple-600 font-semibold hover:bg-purple-50">
               Buy Now
