@@ -2,17 +2,21 @@ import { useEffect, useState } from "react";
 import { Star, Heart, Truck, RefreshCw, ShieldCheck } from "lucide-react";
 import { useParams } from "react-router-dom";
 
-import { useDispatch } from "react-redux";
-import { addToCart } from "../../../store/slices/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { addGuestItem } from "../../../store/slices/cartSlice";
 import { useGetFullProductDetailsQuery } from "../api/productsApi";
+import { useAddItemToCartMutation } from "../../cart/api/cartApi";
+import { toast } from "react-toastify";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const [selectedVariant, setSelectedVariant] = useState(null);
-
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated)
   const [mainImage, setMainImage] = useState(null)
+
   const { data: product, isLoading: productDetailsLoading } = useGetFullProductDetailsQuery(id)
+  const [addItemToCart,{isLoading}]=useAddItemToCartMutation();
 
   useEffect(() => {
     if (product && product.defaultVariantId) {
@@ -33,19 +37,38 @@ const ProductDetail = () => {
   if (!product) return <p className="text-center py-10">Product not found</p>;
 
   // ✅ Add to cart handler
-  const handleAddToCart = () => {
+  const handleAddToCart =async () => {
     if (!selectedVariant) return;
 
-    dispatch(
-      addToCart({
-        _id: selectedVariant._id,
-        name: product.name,
-        selectedVariant,
-        price: selectedVariant.price,
-        image: selectedVariant.images?.[0] || product.images?.[0],
-        quantity: 1, // default 1
-      })
-    );
+    if (isAuthenticated) {
+     try {
+        await addItemToCart({
+          variantId: selectedVariant._id,
+          quantity: 1, 
+        }).unwrap();
+        
+        toast.success("items added")
+      } catch (err) {
+        console.error("❌ Failed to add item:", err?.data?.message);
+        toast.error(`❌ Failed to add item: ${err?.data?.message || err?.error || "Unknown error"}`);
+      }
+
+    } else {
+      dispatch(
+        addGuestItem({
+          _id: selectedVariant._id,
+          name: product.name,
+          selectedVariant,
+          price: selectedVariant.price,
+          image: selectedVariant.images?.[0] || product.images?.[0],
+          quantity: 1, // default 1
+        })
+      );
+       toast.success("Item added to cart!");
+      
+    }
+
+
   };
 
   return (
@@ -203,7 +226,7 @@ const ProductDetail = () => {
             <p className="text-gray-600">{product.description}</p>
             {product.howtoUse && (
               <>
-              <hr className="border-t-1 border-gray-300 rounded-full my-4 shadow-sm" />
+                <hr className="border-t-1 border-gray-300 rounded-full my-4 shadow-sm" />
                 <p className="text-gray-600">
                   <strong>How to use:</strong> {product.howtoUse}
                 </p></>
