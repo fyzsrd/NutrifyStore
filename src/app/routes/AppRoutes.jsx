@@ -13,6 +13,8 @@ import ProfileOverview from '../../features/profile/pages/ProfileOverview'
 import Addresses from '../../features/profile/pages/Addresses'
 import Orders from '../../features/profile/pages/Orders'
 import { PrivateRoute } from './PrivateRoute'
+import CheckOutLayout from '../../layouts/CheckOutLayout'
+import CheckOutPage from '../../pages/checkOut/pages/checkOutPage'
 
 const AppRoutes = () => {
 
@@ -66,6 +68,15 @@ const AppRoutes = () => {
       ]
 
     },
+    {
+      path:'/checkout',
+      element:<CheckOutLayout />,
+      children:[
+        {path:'',
+          element:<CheckOutPage />
+        }
+      ]
+    }
 
 
   ]

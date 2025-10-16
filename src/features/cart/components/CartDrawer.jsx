@@ -1,11 +1,15 @@
+// CartDrawer.jsx
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { removeGuestItem, updateGuestQty } from "../../../store/slices/cartSlice";
 import { useGetCartQuery, useRemoveItemFromCartMutation } from "../api/cartApi";
+import CartItemBox from "./cartItemsBox";
 
 const CartDrawer = ({ open, onClose }) => {
   const [shouldRender, setShouldRender] = useState(open);
   const [animate, setAnimate] = useState(false);
+  const [loadingItemId, setLoadingItemId] = useState(null);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -14,40 +18,57 @@ const CartDrawer = ({ open, onClose }) => {
   const { data: userCart } = useGetCartQuery(undefined, { skip: !isAuthenticated });
   const [removeItemFromCart] = useRemoveItemFromCartMutation();
 
-  const items = isAuthenticated
-    ? userCart?.data?.items || []
-    : guestItems;
+  const items = isAuthenticated ? userCart?.data?.items || [] : guestItems;
 
+  // Remove item
   const handleRemove = async (_id) => {
-    if (isAuthenticated) {
-      await removeItemFromCart(_id);
-    } else {
-      dispatch(removeGuestItem(_id));
+    setLoadingItemId(_id);
+    try {
+      if (isAuthenticated) {
+        await removeItemFromCart(_id).unwrap();
+      } else {
+        dispatch(removeGuestItem(_id));
+      }
+    } finally {
+      setLoadingItemId(null);
     }
   };
 
-  const handleQtyChange = (_id, newQty) => {
+  // Change quantity
+  const handleQtyChange = async (_id, newQty) => {
     if (newQty < 1) return;
 
-    if (!isAuthenticated) {
-      dispatch(updateGuestQty({ _id, qty: newQty }));
+    setLoadingItemId(_id);
+    try {
+      if (!isAuthenticated) {
+        dispatch(updateGuestQty({ _id, qty: newQty }));
+      } else {
+        // TODO: call your API to update authenticated cart item quantity
+        // await updateCartQty({ _id, qty: newQty });
+      }
+    } finally {
+      setLoadingItemId(null);
     }
-    // TODO: add update quantity API for authenticated users
   };
-  // console.log(userCart?.data?.items[0])
 
+  // Drawer animation & body scroll lock
   useEffect(() => {
     if (open) {
       setShouldRender(true);
       document.body.style.overflow = "hidden";
       requestAnimationFrame(() => setAnimate(true));
     } else {
-      document.body.style.overflow = "auto";
       setAnimate(false);
+      document.body.style.overflow = "auto";
       const timeout = setTimeout(() => setShouldRender(false), 300);
       return () => clearTimeout(timeout);
     }
   }, [open]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => { document.body.style.overflow = "auto"; };
+  }, []);
 
   if (!shouldRender) return null;
 
@@ -56,11 +77,11 @@ const CartDrawer = ({ open, onClose }) => {
     0
   );
 
+  const isAnyLoading = loadingItemId !== null || checkoutLoading;
+
   return (
     <div
-      className={`fixed inset-0 z-50 flex transition-opacity duration-300 ${
-        animate ? "opacity-100" : "opacity-0"
-      }`}
+      className={`fixed inset-0 z-50 flex transition-opacity duration-300 ${animate ? "opacity-100" : "opacity-0"}`}
     >
       {/* Overlay */}
       <div
@@ -72,8 +93,8 @@ const CartDrawer = ({ open, onClose }) => {
       {/* Drawer */}
       <aside
         className={`relative ml-auto h-screen w-full md:max-w-[50%] lg:max-w-[40%] bg-white shadow-2xl flex flex-col
-        transform transition-transform duration-300 ease-in-out
-        ${animate ? "translate-x-0" : "translate-x-full"}`}
+          transform transition-transform duration-300 ease-in-out
+          ${animate ? "translate-x-0" : "translate-x-full"}`}
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b px-4 py-3">
@@ -93,57 +114,20 @@ const CartDrawer = ({ open, onClose }) => {
             <p className="text-sm text-gray-500">Your cart is empty</p>
           ) : (
             items.map((item) => {
-              // Determine which object to use
               const variant = isAuthenticated ? item.variantId : item.selectedVariant;
+              const idToUse = variant?._id ?? item._id;
 
               return (
-                <div
-                  key={item._id + (variant?._id || "")}
-                  className="flex flex-col md:flex-row items-center justify-between border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow duration-200 gap-4"
-                >
-                  {/* Left - Image and Name */}
-                  <div className="flex items-center gap-4 w-full md:w-2/3">
-                    <img
-                      className="w-24 h-24 md:w-32 md:h-32 object-contain rounded-lg border p-1 bg-gray-50"
-                      src={variant?.images?.[0] ?? item.image ?? ""}
-                      alt={item.name ?? ""}
-                    />
-                    <div className="flex flex-col">
-                      <p className="font-medium text-gray-800">{variant.productId?.name ?? variant.name}</p>
-                      <div className="flex gap-2">
-                        <p className="text-sm text-gray-500">{variant?.flavor ?? ""}</p>
-                        <p className="text-sm text-gray-500">
-                          {variant?.weight ?? ""} {variant?.weightType ?? ""}
-                        </p>
-                      </div>
-                      <p className="text-sm text-gray-500 mt-1">
-                        ₹{variant?.price ?? item.price ?? 0} ×{" "}
-                        <input
-                          type="number"
-                          min="1"
-                          value={item.quantity}
-                          onChange={(e) =>
-                            handleQtyChange(item._id, Number(e.target.value))
-                          }
-                          className="w-16 text-center border rounded px-1 py-0.5 ml-2 focus:outline-none focus:ring-1 focus:ring-purple-500"
-                        />
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Right - Total & Remove */}
-                  <div className="flex items-center gap-7 mt-2 md:mt-0">
-                    <p className="font-semibold text-gray-800 text-lg">
-                      ₹ {(variant?.price ?? item.price ?? 0) * item.quantity}
-                    </p>
-                    <button
-                      onClick={() => handleRemove(variant._id)}
-                      className="text-red-500 hover:text-red-600 text-xl font-bold"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                </div>
+                <CartItemBox
+                  key={idToUse}
+                  item={item}
+                  variant={variant}
+                  loadingItemId={loadingItemId}
+                  checkoutLoading={checkoutLoading}
+                  handleQtyChange={handleQtyChange}
+                  handleRemove={handleRemove}
+                  isAuthenticated={isAuthenticated}
+                />
               );
             })
           )}
@@ -152,8 +136,13 @@ const CartDrawer = ({ open, onClose }) => {
         {/* Footer */}
         <div className="border-t p-4 space-y-2">
           <p className="font-semibold text-lg">Total: ₹{total}</p>
-          <button className="w-full rounded-xl bg-gray-900 px-4 py-2 text-white hover:bg-gray-800">
-            Checkout
+          <button
+            disabled={isAnyLoading}
+            className={`w-full rounded-xl px-4 py-2 text-white ${
+              isAnyLoading ? "bg-gray-400 cursor-not-allowed" : "bg-gray-900 hover:bg-gray-800"
+            }`}
+          >
+            {isAnyLoading ? "Processing..." : "Checkout"}
           </button>
         </div>
       </aside>
