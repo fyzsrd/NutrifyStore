@@ -4,12 +4,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { removeGuestItem, updateGuestQty } from "../../../store/slices/cartSlice";
 import { useGetCartQuery, useRemoveItemFromCartMutation } from "../api/cartApi";
 import CartItemBox from "./cartItemsBox";
+import { useNavigate } from "react-router-dom";
 
 const CartDrawer = ({ open, onClose }) => {
   const [shouldRender, setShouldRender] = useState(open);
   const [animate, setAnimate] = useState(false);
   const [loadingItemId, setLoadingItemId] = useState(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const navigate=useNavigate()
+
+  const handleToCheckOut=()=>{
+    navigate('/checkOut')
+
+  }
 
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -137,6 +144,7 @@ const CartDrawer = ({ open, onClose }) => {
         <div className="border-t p-4 space-y-2">
           <p className="font-semibold text-lg">Total: ₹{total}</p>
           <button
+          onClick={handleToCheckOut}
             disabled={isAnyLoading}
             className={`w-full rounded-xl px-4 py-2 text-white ${
               isAnyLoading ? "bg-gray-400 cursor-not-allowed" : "bg-gray-900 hover:bg-gray-800"

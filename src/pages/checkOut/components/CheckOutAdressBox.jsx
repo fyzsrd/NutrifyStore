@@ -11,12 +11,7 @@ const CheckOutAdressBox = ({ address, onAdd, onChange, isLoading }) => {
             Delivery Address
           </h2>
         </div>
-        <button
-          onClick={onAdd}
-          className="bg-blue-500 px-3 py-1 rounded-sm text-white hover:bg-blue-600 transition"
-        >
-          Add +
-        </button>
+        
       </div>
 
       <div className="border rounded-md p-4 bg-white shadow-sm hover:shadow-md transition cursor-pointer">

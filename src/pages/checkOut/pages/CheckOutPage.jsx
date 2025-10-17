@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react'
 import CheckOutAdressBox from '../components/CheckOutAdressBox'
 import { useGetAddressesQuery } from '../../../features/profile/api/profileApi'
 import CheckOutAddressModal from '../components/CheckOutAddressModal'
+import CouponBox from '../../../features/auth/coupons/components/CouponBox'
+import OrderSummaryAccordion from '../components/OrderSummaryAccordion'
+import PaymentSelection from '../components/PaymentSelection'
 
 const CheckOutPage = () => {
    const { data: addressData = [], isLoading } = useGetAddressesQuery()
@@ -23,9 +26,23 @@ const CheckOutPage = () => {
         isLoading={isLoading}
            />
         </div>
+
+        <div className='mt-2'>
+
+          <CouponBox />
+
+        </div>
       <h1 className="text-2xl font-bold mb-4">Checkout</h1>
       {/* Implement checkout form / summary here */}
       <p>Checkout form and order summary goes here...</p>
+
+      <div className='mt-4'>
+        <PaymentSelection />
+      </div>
+
+      <div className='mt-4'>
+        <OrderSummaryAccordion />
+      </div>
 
       {isModalOpen && (
         <CheckOutAddressModal
