@@ -146,7 +146,7 @@ const CartDrawer = ({ open, onClose }) => {
           <button
           onClick={handleToCheckOut}
             disabled={isAnyLoading}
-            className={`w-full rounded-xl px-4 py-2 text-white ${
+            className={`w-full rounded-xl px-4 py-2 text-white cursor-pointer ${
               isAnyLoading ? "bg-gray-400 cursor-not-allowed" : "bg-gray-900 hover:bg-gray-800"
             }`}
           >
