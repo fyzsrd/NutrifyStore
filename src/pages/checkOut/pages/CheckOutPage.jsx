@@ -5,17 +5,28 @@ import CheckOutAddressModal from '../components/CheckOutAddressModal'
 import CouponBox from '../../../features/auth/coupons/components/CouponBox'
 import OrderSummaryAccordion from '../components/OrderSummaryAccordion'
 import PaymentSelection from '../components/PaymentSelection'
+import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 const CheckOutPage = () => {
+  const navigate=useNavigate();
+  const isAuthenticated=useSelector((state)=>state.auth.isAuthenticated)
+ 
+  
    const { data: addressData = [], isLoading } = useGetAddressesQuery()
   const [selectedAddress, setSelectedAddress] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+  
+
+  
 
   // pick default address once data loads
   useEffect(() => {
     const defaultAddr = addressData.find((a) => a.defaultAddress)
     if (defaultAddr) setSelectedAddress(defaultAddr)
   }, [addressData])
+
   return (
      <div className="max-w-4xl mx-auto bg-white p-4 rounded shadow">
         <div>

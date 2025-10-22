@@ -18,7 +18,7 @@ const ProductDetail = () => {
   const [mainImage, setMainImage] = useState(null)
 
   const { data: product, isLoading: productDetailsLoading } = useGetFullProductDetailsQuery(id)
-  const [addItemToCart,{isLoading}]=useAddItemToCartMutation();
+  const [addItemToCart, { isLoading }] = useAddItemToCartMutation();
 
   useEffect(() => {
     if (product && product.defaultVariantId) {
@@ -39,17 +39,27 @@ const ProductDetail = () => {
   if (!product) return <p className="text-center py-10">Product not found</p>;
 
   // ✅ Add to cart handler
-  const handleAddToCart =async () => {
+  const handleAddToCart = async () => {
     if (!selectedVariant) return;
 
     if (isAuthenticated) {
-     try {
+      try {
         await addItemToCart({
           variantId: selectedVariant._id,
-          quantity: 1, 
+          quantity: 1,
         }).unwrap();
-        
-        toast.success("items added")
+
+        toast.success("items added", {
+          position: "top-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+         
+        })
       } catch (err) {
         console.error("❌ Failed to add item:", err?.data?.message);
         toast.error(`❌ Failed to add item: ${err?.data?.message || err?.error || "Unknown error"}`);
@@ -66,8 +76,8 @@ const ProductDetail = () => {
           quantity: 1, // default 1
         })
       );
-       toast.success("Item added to cart!");
-      
+      toast.success("Item added to cart!");
+
     }
 
 
@@ -195,7 +205,7 @@ const ProductDetail = () => {
               onClick={handleAddToCart}
               className="flex-1 py-3 cursor-pointer rounded-xl bg-purple-600 text-white font-semibold hover:bg-purple-700"
             >
-            {isLoading ? <ClipLoader /> : "add to cart "}
+              {isLoading ? <ClipLoader /> : "add to cart "}
             </button>
             <button className="flex-1 py-3  cursor-pointer rounded-xl border border-purple-600 text-purple-600 font-semibold hover:bg-purple-50">
               Buy Now
