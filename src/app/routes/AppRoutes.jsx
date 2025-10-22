@@ -68,13 +68,28 @@ const AppRoutes = () => {
       ]
 
     },
+    // {
+    //   path: '/checkout',
+    //   element: <CheckOutLayout />,
+    //   children: [
+    //     {
+    //       path: '',
+    //       element: <CheckOutPage />
+    //     }
+    //   ]
+    // }
     {
       path: '/checkout',
-      element: <CheckOutLayout />,
+      element: <PrivateRoute />,      // ✅ protect the route here
       children: [
         {
-          path: '',
-          element: <CheckOutPage />
+          element: <CheckOutLayout />,
+          children: [
+            {
+              path: '',
+              element: <CheckOutPage />
+            }
+          ]
         }
       ]
     }
