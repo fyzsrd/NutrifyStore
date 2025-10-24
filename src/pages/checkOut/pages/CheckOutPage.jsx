@@ -5,15 +5,13 @@ import CheckOutAddressModal from '../components/CheckOutAddressModal'
 import CouponBox from '../../../features/auth/coupons/components/CouponBox'
 import OrderSummaryAccordion from '../components/OrderSummaryAccordion'
 import PaymentSelection from '../components/PaymentSelection'
-import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+
+import { useGetCartQuery } from '../../../features/cart/api/cartApi'
 
 const CheckOutPage = () => {
-  const navigate=useNavigate();
-  const isAuthenticated=useSelector((state)=>state.auth.isAuthenticated)
- 
-  
-   const { data: addressData = [], isLoading } = useGetAddressesQuery()
+   const { data: addressData = [], isLoading:addressLoading } = useGetAddressesQuery()
+   const {data:cartData,isLoading:cartLoading}=useGetCartQuery()
+
   const [selectedAddress, setSelectedAddress] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -27,6 +25,10 @@ const CheckOutPage = () => {
     if (defaultAddr) setSelectedAddress(defaultAddr)
   }, [addressData])
 
+  if (addressLoading || cartLoading) {
+    return <div className="text-center py-10">Loading checkout data...</div>;
+  }
+
   return (
      <div className="max-w-4xl mx-auto bg-white p-4 rounded shadow">
         <div>
@@ -34,7 +36,7 @@ const CheckOutPage = () => {
           address={selectedAddress}
           onAdd={() => console.log('Open add address form')}
         onChange={() => setIsModalOpen(true)}
-        isLoading={isLoading}
+        isLoading={addressLoading}
            />
         </div>
 
@@ -51,9 +53,11 @@ const CheckOutPage = () => {
         <PaymentSelection />
       </div>
 
-      <div className='mt-4'>
+      {/* <div className='mt-4'>
         <OrderSummaryAccordion />
-      </div>
+      </div> */}
+
+       {!cartLoading && <OrderSummaryAccordion cartData={cartData} />}
 
       {isModalOpen && (
         <CheckOutAddressModal
