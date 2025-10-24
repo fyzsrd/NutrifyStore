@@ -49,7 +49,7 @@ const ProductDetail = () => {
           quantity: 1,
         }).unwrap();
 
-        toast.success("items added", {
+        toast.success("cart Updated!", {
           position: "top-left",
           autoClose: 5000,
           hideProgressBar: false,
@@ -76,7 +76,18 @@ const ProductDetail = () => {
           quantity: 1, // default 1
         })
       );
-      toast.success("Item added to cart!");
+      
+      toast.success("Item added", {
+          position: "top-left",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+         
+        })
 
     }
 
@@ -131,6 +142,7 @@ const ProductDetail = () => {
             <span className="text-yellow-500 flex items-center gap-1">
               <Star className="w-4 h-4 fill-yellow-500" /> Trusted
             </span>
+           
 
           </div>
 

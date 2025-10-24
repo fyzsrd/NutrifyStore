@@ -57,7 +57,7 @@ const CartItemBox = ({
           <button
             onClick={() => handleRemove(idToUse)}
             disabled={checkoutLoading}
-            className="text-red-500 hover:text-red-600 text-xl font-bold"
+            className="text-red-500 hover:text-red-600 text-xl font-bold cursor-pointer"
             aria-label={`Remove ${item.name} from cart`}
           >
             ✕

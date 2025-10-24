@@ -22,7 +22,7 @@ const CartDrawer = ({ open, onClose }) => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const guestItems = useSelector((state) => state.cart.items);
 
-  const { data: userCart } = useGetCartQuery(undefined, { skip: !isAuthenticated });
+  const { data: userCart ,refetch} = useGetCartQuery(undefined, { skip: !isAuthenticated });
   const [removeItemFromCart] = useRemoveItemFromCartMutation();
 
   const items = isAuthenticated ? userCart?.data?.items || [] : guestItems;
@@ -33,6 +33,7 @@ const CartDrawer = ({ open, onClose }) => {
     try {
       if (isAuthenticated) {
         await removeItemFromCart(_id).unwrap();
+        await refetch()
       } else {
         dispatch(removeGuestItem(_id));
       }
