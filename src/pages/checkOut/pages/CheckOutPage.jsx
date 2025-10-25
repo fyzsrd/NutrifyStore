@@ -7,6 +7,7 @@ import OrderSummaryAccordion from '../components/OrderSummaryAccordion'
 import PaymentSelection from '../components/PaymentSelection'
 
 import { useGetCartQuery } from '../../../features/cart/api/cartApi'
+import AddAddressModal from '../../../features/profile/components/AddAddressModal'
 
 const CheckOutPage = () => {
    const { data: addressData = [], isLoading:addressLoading } = useGetAddressesQuery()
@@ -14,6 +15,12 @@ const CheckOutPage = () => {
 
   const [selectedAddress, setSelectedAddress] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isAddAddressModal,setIsAddAddressModal]=useState(false)
+
+
+  const handelAddAddress=()=>{
+    setIsAddAddressModal(true)
+  }
 
   
 
@@ -34,7 +41,7 @@ const CheckOutPage = () => {
         <div>
           <CheckOutAdressBox
           address={selectedAddress}
-          onAdd={() => console.log('Open add address form')}
+          onAdd={handelAddAddress}
         onChange={() => setIsModalOpen(true)}
         isLoading={addressLoading}
            />
@@ -59,6 +66,8 @@ const CheckOutPage = () => {
 
        {!cartLoading && <OrderSummaryAccordion cartData={cartData} />}
 
+       {isAddAddressModal && <AddAddressModal
+       handelClose={(()=>setIsAddAddressModal(false))} />}
       {isModalOpen && (
         <CheckOutAddressModal
         addresses={addressData}
