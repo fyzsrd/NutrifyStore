@@ -1,17 +1,31 @@
 
-import { useGetAddressesQuery } from "../api/profileApi";
+import { toast } from "react-toastify";
+import { useDeleteAddressMutation, useGetAddressesQuery } from "../api/profileApi";
 import AddAddressModal from "../components/AddAddressModal";
 import { useState } from "react";
 
 const Addresses = () => {
   const [isAddAddressModal,setIsAddAddressModal]=useState(false)
 
+  const [deleteAddress,{isLoading:deleteLoading} ]=useDeleteAddressMutation()
 
   const {
     data:addressData,
     isLoading,
     isError
   } = useGetAddressesQuery();
+console.log(addressData)
+  const handleDeleteAddress=async (id)=>{
+    console.log(id)
+    try{
+      await deleteAddress(id).unwrap()
+      toast.success("addres deleted")
+
+    }catch(err){
+      toast.error("failed")
+      console.error(err)
+    }
+  }
 
 
 
@@ -52,6 +66,8 @@ const Addresses = () => {
                     {a.city}, {a.state} - {a.pincode}
                   </p>
                   <p className="text-gray-600">Phone: {a.mobileNumber}</p>
+
+                  <p className="text-gray-600">addressType : <span className="bg-blue-400 px-1.5 py-0.5 rounded-sm text-white">{a?.addressType }</span></p>
                 </div>
 
                 {/* Actions */}
@@ -70,8 +86,10 @@ const Addresses = () => {
                   )}
 
                     {/* Delete */}
-                  <button className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition cursor-pointer">
-                    Delete
+                  <button className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition cursor-pointer"
+                  onClick={()=>handleDeleteAddress(a._id)}
+                  disabled={deleteLoading}>
+                  {deleteLoading ? "deleting":   "Delete"}
                   </button>
                 </div>
               </div>
