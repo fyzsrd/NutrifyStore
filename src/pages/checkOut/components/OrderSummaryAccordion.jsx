@@ -16,6 +16,8 @@ const OrderSummaryAccordion = () => {
     const removedItems = data?.data?.removedItems || [];
     const totalAmount = data?.data?.totalAmount || 0;
 
+
+
     
     return (
         <div className="border border-gray-300 rounded-md bg-gray-50 shadow-sm">

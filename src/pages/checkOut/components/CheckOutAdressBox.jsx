@@ -2,6 +2,7 @@ import { MapPinned } from 'lucide-react'
 import React from 'react'
 
 const CheckOutAdressBox = ({ address, onAdd, onChange, isLoading }) => {
+
   return (
     <div className="border p-3 rounded-md border-gray-300 bg-gray-50 flex flex-col gap-2">
       <div className="flex justify-between items-center">
@@ -37,7 +38,9 @@ const CheckOutAdressBox = ({ address, onAdd, onChange, isLoading }) => {
             </div>
           </div>
         ) : (
-          <p className="text-gray-500 italic">
+          <p className="text-gray-500 italic"
+          onClick={onAdd}
+          >
             No address selected. Please add or select an address.
           </p>
         )}

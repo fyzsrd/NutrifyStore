@@ -25,11 +25,12 @@ const CheckOutLayout = () => {
       {/* ✅ Scrollable Content Area */}
       <main className="flex-1 overflow-y-auto mt-[60px] mb-[80px] p-3 bg-gray-50">
         <Outlet />
+      
       </main>
 
       {/* ✅ Fixed Bottom Button */}
-      <div className="fixed bottom-0 left-0 right-0 p-3 bg-blue-900 shadow-inner">
-        <button className="py-4 px-6 w-full rounded-lg bg-white text-blue-950 font-bold text-lg">
+      <div className="fixed bottom-0 left-0 right-0 p-3 bg-blue-900 shadow-inner text-center ">
+        <button className="py-4 px-6 w-full rounded-lg bg-white cursor-pointer text-blue-950 font-bold text-lg md:w-lg">
           Proceed
         </button>
       </div>

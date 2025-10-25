@@ -1,15 +1,31 @@
 
-import { useGetAddressesQuery } from "../api/profileApi";
-import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { useDeleteAddressMutation, useGetAddressesQuery } from "../api/profileApi";
+import AddAddressModal from "../components/AddAddressModal";
+import { useState } from "react";
 
 const Addresses = () => {
+  const [isAddAddressModal,setIsAddAddressModal]=useState(false)
 
+  const [deleteAddress,{isLoading:deleteLoading} ]=useDeleteAddressMutation()
 
   const {
     data:addressData,
     isLoading,
     isError
   } = useGetAddressesQuery();
+console.log(addressData)
+  const handleDeleteAddress=async (id)=>{
+    console.log(id)
+    try{
+      await deleteAddress(id).unwrap()
+      toast.success("addres deleted")
+
+    }catch(err){
+      toast.error("failed")
+      console.error(err)
+    }
+  }
 
 
 
@@ -18,13 +34,18 @@ const Addresses = () => {
       {/* Header */}
       <div className="flex justify-between items-center p-4 border-b border-gray-200">
         <h1 className="text-2xl font-semibold text-gray-800">My Addresses</h1>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition cursor-pointer">
+        <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition cursor-pointer"
+        onClick={()=>setIsAddAddressModal(true)}>
           Add Address
         </button>
       </div>
 
+     
+
       {/* Scrollable content */}
       <div className="p-4 overflow-y-auto flex-1">
+         {isAddAddressModal && <AddAddressModal 
+      handelClose={()=>setIsAddAddressModal(false)}/>}
         {isLoading && <p className="text-gray-500">Loading addresses...</p>}
         {isError && <p className="text-red-500">Failed to load addresses.</p>}
 
@@ -45,6 +66,8 @@ const Addresses = () => {
                     {a.city}, {a.state} - {a.pincode}
                   </p>
                   <p className="text-gray-600">Phone: {a.mobileNumber}</p>
+
+                  <p className="text-gray-600">addressType : <span className="bg-blue-400 px-1.5 py-0.5 rounded-sm text-white">{a?.addressType }</span></p>
                 </div>
 
                 {/* Actions */}
@@ -63,8 +86,10 @@ const Addresses = () => {
                   )}
 
                     {/* Delete */}
-                  <button className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition cursor-pointer">
-                    Delete
+                  <button className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition cursor-pointer"
+                  onClick={()=>handleDeleteAddress(a._id)}
+                  disabled={deleteLoading}>
+                  {deleteLoading ? "deleting":   "Delete"}
                   </button>
                 </div>
               </div>
@@ -75,6 +100,8 @@ const Addresses = () => {
             <p className="text-center text-gray-500 mt-6">No addresses found.</p>
           )
         )}
+
+        
       </div>
     </div>
   );
