@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { CircleX } from "lucide-react";
+import { useAddAddressesMutation } from "../api/profileApi";
+import { toast } from "react-toastify";
 
 const AddAddressModal = ({ handelClose }) => {
   const [formData, setFormData] = useState({
@@ -17,6 +19,8 @@ const AddAddressModal = ({ handelClose }) => {
     defaultAddress: false,
   });
 
+  const [addAddresses,{isLoading}]=useAddAddressesMutation();
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -25,14 +29,21 @@ const AddAddressModal = ({ handelClose }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Submitting address:", formData);
 
-    // 🔹 Example API call (pseudo)
-    // await axios.post("/api/address", formData);
-    // toast.success("Address saved!");
-    // handelClose();
+    try{
+
+      await addAddresses(formData).unwrap()
+      toast.success("address added")
+      handelClose();
+
+    }catch(err){
+      console.error("Failed to add address:", err);
+      toast.error("Failed to add address try again")
+    }
+
   };
 
   return (
@@ -237,15 +248,18 @@ const AddAddressModal = ({ handelClose }) => {
             <button
               type="button"
               onClick={handelClose}
-              className="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 transition"
+              className="px-4 py-2 cursor-pointer rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 transition"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
+              disabled={isLoading}
+              className={`px-5 py-2 cursor-pointer rounded-lg text-white font-medium transition ${
+                isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+              }`}
             >
-              Save Address
+              {isLoading ? "Saving..." : "Save Address"}
             </button>
           </div>
         </form>
@@ -254,4 +268,4 @@ const AddAddressModal = ({ handelClose }) => {
   );
 };
 
-export default AddAddressModal;
+export default AddAddressModal ;

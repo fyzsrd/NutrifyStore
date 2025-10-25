@@ -7,12 +7,20 @@ const profileApi = privateApiSlice.injectEndpoints({
         getAddresses: build.query({
             query: () => `address`,
             providesTags: ['User'],
-            transformResponse:(response)=>response.address,
+            transformResponse: (response) => response.address,
         }),
-        
+
+        addAddresses: build.mutation({
+            query: (formData) => ({
+                url: "address/",
+                method: "POST",
+                body: formData,
+            }),
+            invalidatesTags: ['User'],
+        }),
 
     }),
     overrideExisting: false,
 })
 
-export const { useGetAddressesQuery } = profileApi
+export const { useGetAddressesQuery, useAddAddressesMutation } = profileApi
