@@ -15,6 +15,11 @@ import Orders from '../../features/profile/pages/Orders'
 import { PrivateRoute } from './PrivateRoute'
 import CheckOutLayout from '../../layouts/CheckOutLayout'
 import CheckOutPage from '../../pages/checkOut/pages/CheckOutPage'
+import PolicesPage from '../../features/policies/pages/PolicesPage'
+import TermsAndConditions from '../../features/policies/pages/TermsAndConditions'
+import CancellationAndRefund from '../../features/policies/pages/CancellationAndRefund'
+import ShippingAndDelivery from '../../features/policies/pages/ShippingAndDelivery'
+import ContactUs from '../../features/policies/pages/ContactUs'
 
 const AppRoutes = () => {
 
@@ -92,6 +97,17 @@ const AppRoutes = () => {
           ]
         }
       ]
+    },
+
+    {
+      path:'/policies',
+      element:<PolicesPage />,
+       children: [
+    { path: 'terms', element: <TermsAndConditions /> },
+    { path: 'cancellation-refund', element: <CancellationAndRefund /> },
+    { path: 'shipping-delivery', element: <ShippingAndDelivery /> },
+    { path: 'contact-us', element: <ContactUs /> },
+  ],
     }
 
 
